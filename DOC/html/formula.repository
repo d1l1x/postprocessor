@@ -1,0 +1,10 @@
+\form#0:\[\hat{R}_{ii}\left(\kappa,t\right)= \left<\hat{u}_i^{*}\left(\kappa,t\right)\,\hat{u}_i\left(\kappa,t\right)\right>= \Phi_{ii}\left(\kappa,t\right).\]
+\form#1:$\Phi$
+\form#2:\[ E(k)=\oint\frac{1}{2}\Phi_{ii}(\kappa)\,d\mathrm{S}(\kappa) \]
+\form#3:\[\sigma = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2}, {\rm \ \ where\ \ } \mu = \frac{1}{N} \sum_{i=1}^N x_i. \]
+\form#4:\[\mathrm{cov}(f,f)=\left(f\star f\right)(r)=\int_0^{\infty}f(x)\,f(x+r)\,dx \]
+\form#5:\[\mathcal{F}\{f\star f\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{f\}. \]
+\form#6:\[r=\frac{\mathrm{cov}(f,f)}{\sigma_f\,\sigma_f} \]
+\form#7:\[\mathrm{cov}(f,g)=\left(f\star g\right)(r)=\int_0^{\infty}f(x)\,g(x+r)\,dx \]
+\form#8:\[\mathcal{F}\{f\star g\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{g\}. \]
+\form#9:\[r=\frac{\mathrm{cov}(f,g)}{\sigma_f\,\sigma_g} \]

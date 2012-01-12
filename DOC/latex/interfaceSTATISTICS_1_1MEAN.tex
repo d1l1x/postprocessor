@@ -1,0 +1,97 @@
+\hypertarget{interfaceSTATISTICS_1_1MEAN}{
+\section{STATISTICS::MEAN Interface Reference}
+\label{interfaceSTATISTICS_1_1MEAN}\index{STATISTICS::MEAN@{STATISTICS::MEAN}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1MEAN_a97da6fad38ebdadf885aad5e633df4fc}{MEAN1D} (M, NX)
+\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1MEAN_ad7780f2b91da10d31731a34b882a211b}{MEAN3D} (M, NX, NY, NZ, \hyperlink{interfaceSTATISTICS_1_1MEAN}{MEAN})
+\begin{DoxyCompactList}\small\item\em Shifts the input array towards the zero frequencies. \end{DoxyCompactList}\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1MEAN_a7211c5a2a32311a19d04ab567c005d46}{MEAN4D} (M, NX, NY, NZ, DIM, \hyperlink{interfaceSTATISTICS_1_1MEAN}{MEAN})
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 15 of file STATISTICS.f90.
+
+
+
+\subsection{Member Function/Subroutine Documentation}
+\hypertarget{interfaceSTATISTICS_1_1MEAN_a97da6fad38ebdadf885aad5e633df4fc}{
+\index{STATISTICS::MEAN@{STATISTICS::MEAN}!MEAN1D@{MEAN1D}}
+\index{MEAN1D@{MEAN1D}!STATISTICS::MEAN@{STATISTICS::MEAN}}
+\subsubsection[{MEAN1D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::MEAN::MEAN1D (
+\begin{DoxyParamCaption}
+\item[{REAL(DP),dimension(:)}]{M, }
+\item[{INTEGER(SP)}]{NX}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1MEAN_a97da6fad38ebdadf885aad5e633df4fc}
+
+
+Definition at line 526 of file STATISTICS.f90.
+
+\hypertarget{interfaceSTATISTICS_1_1MEAN_ad7780f2b91da10d31731a34b882a211b}{
+\index{STATISTICS::MEAN@{STATISTICS::MEAN}!MEAN3D@{MEAN3D}}
+\index{MEAN3D@{MEAN3D}!STATISTICS::MEAN@{STATISTICS::MEAN}}
+\subsubsection[{MEAN3D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::MEAN::MEAN3D (
+\begin{DoxyParamCaption}
+\item[{REAL(DP),dimension(:,:,:)}]{M, }
+\item[{INTEGER(SP)}]{NX, }
+\item[{INTEGER(SP)}]{NY, }
+\item[{}]{NZ, }
+\item[{REAL(DP)}]{MEAN}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1MEAN_ad7780f2b91da10d31731a34b882a211b}
+
+
+Shifts the input array towards the zero frequencies. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em M} & 3D array for the computation of the mean value \\
+\hline
+\mbox{\tt in}  & {\em NX} & Number of nodes in x direction \\
+\hline
+\mbox{\tt in}  & {\em NY} & Number of nodes in y direction \\
+\hline
+\mbox{\tt in}  & {\em NZ} & Number of nodes in z direction \\
+\hline
+\mbox{\tt out}  & {\em \hyperlink{interfaceSTATISTICS_1_1MEAN}{MEAN}} & Computed mean value \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 547 of file STATISTICS.f90.
+
+\hypertarget{interfaceSTATISTICS_1_1MEAN_a7211c5a2a32311a19d04ab567c005d46}{
+\index{STATISTICS::MEAN@{STATISTICS::MEAN}!MEAN4D@{MEAN4D}}
+\index{MEAN4D@{MEAN4D}!STATISTICS::MEAN@{STATISTICS::MEAN}}
+\subsubsection[{MEAN4D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::MEAN::MEAN4D (
+\begin{DoxyParamCaption}
+\item[{REAL(DP),dimension(:,:,:,:)}]{M, }
+\item[{INTEGER(SP)}]{NX, }
+\item[{INTEGER(SP)}]{NY, }
+\item[{}]{NZ, }
+\item[{INTEGER(SP)}]{DIM, }
+\item[{REAL(DP)}]{MEAN}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1MEAN_a7211c5a2a32311a19d04ab567c005d46}
+
+
+Definition at line 556 of file STATISTICS.f90.
+
+
+
+The documentation for this interface was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+/home/fdietzsc/fortran/POSTPROC/SOURCES/\hyperlink{STATISTICS_8f90}{STATISTICS.f90}\end{DoxyCompactItemize}

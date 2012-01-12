@@ -1,0 +1,103 @@
+\hypertarget{interfaceSTATISTICS_1_1CORREL}{
+\section{STATISTICS::CORREL Interface Reference}
+\label{interfaceSTATISTICS_1_1CORREL}\index{STATISTICS::CORREL@{STATISTICS::CORREL}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1CORREL_a206eb4c97224194622bc1108e5a541fa}{CORREL3D} (IN, NX, NY, NZ, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the auto-\/correlation coefficients of the 3D input array. The general definition of the auto-\/correlation (often exressed as the covariance) function is \[\mathrm{cov}(f,f)=\left(f\star f\right)(r)=\int_0^{\infty}f(x)\,f(x+r)\,dx \] One important feature of the correlation function is that is satisfies \[\mathcal{F}\{f\star f\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{f\}. \] In the code this allows for fast computations of the correlation function using the FFT approach. In order to get the correlation coefficients, the previously mentioned function has to be devided by standard deviations of the input arrays. \[r=\frac{\mathrm{cov}(f,f)}{\sigma_f\,\sigma_f} \] \end{DoxyCompactList}\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1CORREL_aebc01ee1d1300e0d47d6984308594343}{XCORREL} (IN1, IN2, NX, NY, NZ, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the cross-\/correlation coefficients of the 3D input arrays. The general definition of the cross-\/correlation (often exressed as the covariance) function is \[\mathrm{cov}(f,g)=\left(f\star g\right)(r)=\int_0^{\infty}f(x)\,g(x+r)\,dx \] One important feature of the correlation function is that is satisfies \[\mathcal{F}\{f\star g\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{g\}. \] In the code this allows for fast computations of the correlation function using the FFT approach. In order to get the correlation coefficients, the previously mentioned function has to be devided by standard deviations of the input arrays. \[r=\frac{\mathrm{cov}(f,g)}{\sigma_f\,\sigma_g} \] Computes the cross-\/correlation of the 3D input array \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 18 of file STATISTICS.f90.
+
+
+
+\subsection{Member Function/Subroutine Documentation}
+\hypertarget{interfaceSTATISTICS_1_1CORREL_a206eb4c97224194622bc1108e5a541fa}{
+\index{STATISTICS::CORREL@{STATISTICS::CORREL}!CORREL3D@{CORREL3D}}
+\index{CORREL3D@{CORREL3D}!STATISTICS::CORREL@{STATISTICS::CORREL}}
+\subsubsection[{CORREL3D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::CORREL::CORREL3D (
+\begin{DoxyParamCaption}
+\item[{COMPLEX(DPC),dimension(:,:,:),intent(in)}]{IN, }
+\item[{INTEGER(SP)}]{NX, }
+\item[{INTEGER(SP)}]{NY, }
+\item[{INTEGER(SP)}]{NZ, }
+\item[{COMPLEX(DPC),dimension(:,:,:),intent(inout)}]{OUT}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1CORREL_a206eb4c97224194622bc1108e5a541fa}
+
+
+Computes the auto-\/correlation coefficients of the 3D input array. The general definition of the auto-\/correlation (often exressed as the covariance) function is \[\mathrm{cov}(f,f)=\left(f\star f\right)(r)=\int_0^{\infty}f(x)\,f(x+r)\,dx \] One important feature of the correlation function is that is satisfies \[\mathcal{F}\{f\star f\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{f\}. \] In the code this allows for fast computations of the correlation function using the FFT approach. In order to get the correlation coefficients, the previously mentioned function has to be devided by standard deviations of the input arrays. \[r=\frac{\mathrm{cov}(f,f)}{\sigma_f\,\sigma_f} \] 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch Computes the auto-\/correlation coefficients of the 3D input array 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em IN} & 3D array for the computation of the 3D auto-\/correlation coefficients \\
+\hline
+\mbox{\tt in}  & {\em NX} & Number of nodes in x direction \\
+\hline
+\mbox{\tt in}  & {\em NY} & Number of nodes in y direction \\
+\hline
+\mbox{\tt in}  & {\em NZ} & Number of nodes in z direction \\
+\hline
+\mbox{\tt out}  & {\em OUT} & 3D array of auto-\/correlation coeffcients \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 416 of file STATISTICS.f90.
+
+\hypertarget{interfaceSTATISTICS_1_1CORREL_aebc01ee1d1300e0d47d6984308594343}{
+\index{STATISTICS::CORREL@{STATISTICS::CORREL}!XCORREL@{XCORREL}}
+\index{XCORREL@{XCORREL}!STATISTICS::CORREL@{STATISTICS::CORREL}}
+\subsubsection[{XCORREL}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::CORREL::XCORREL (
+\begin{DoxyParamCaption}
+\item[{COMPLEX(DPC),dimension(:,:,:),intent(in)}]{IN1, }
+\item[{COMPLEX(DPC),dimension(:,:,:),intent(in)}]{IN2, }
+\item[{INTEGER(SP)}]{NX, }
+\item[{INTEGER(SP)}]{NY, }
+\item[{INTEGER(SP)}]{NZ, }
+\item[{COMPLEX(DPC),dimension(:,:,:),intent(inout)}]{OUT}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1CORREL_aebc01ee1d1300e0d47d6984308594343}
+
+
+Computes the cross-\/correlation coefficients of the 3D input arrays. The general definition of the cross-\/correlation (often exressed as the covariance) function is \[\mathrm{cov}(f,g)=\left(f\star g\right)(r)=\int_0^{\infty}f(x)\,g(x+r)\,dx \] One important feature of the correlation function is that is satisfies \[\mathcal{F}\{f\star g\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{g\}. \] In the code this allows for fast computations of the correlation function using the FFT approach. In order to get the correlation coefficients, the previously mentioned function has to be devided by standard deviations of the input arrays. \[r=\frac{\mathrm{cov}(f,g)}{\sigma_f\,\sigma_g} \] Computes the cross-\/correlation of the 3D input array 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em IN1} & 3D array for the computation of the 3D cross-\/correlation coefficients \\
+\hline
+\mbox{\tt in}  & {\em IN2} & 3D array for the computation of the 3D cross-\/correlation coefficients \\
+\hline
+\mbox{\tt in}  & {\em NX} & Number of nodes in x direction \\
+\hline
+\mbox{\tt in}  & {\em NY} & Number of nodes in y direction \\
+\hline
+\mbox{\tt in}  & {\em NZ} & Number of nodes in z direction \\
+\hline
+\mbox{\tt out}  & {\em OUT} & 3D array of cross-\/correlation coeffcients \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 485 of file STATISTICS.f90.
+
+
+
+The documentation for this interface was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+/home/fdietzsc/fortran/POSTPROC/SOURCES/\hyperlink{STATISTICS_8f90}{STATISTICS.f90}\end{DoxyCompactItemize}

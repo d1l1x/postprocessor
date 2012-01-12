@@ -1,0 +1,376 @@
+\hypertarget{IO_8f90}{
+\section{/home/fdietzsc/fortran/POSTPROC/SOURCES/IO.f90 File Reference}
+\label{IO_8f90}\index{/home/fdietzsc/fortran/POSTPROC/SOURCES/IO.f90@{/home/fdietzsc/fortran/POSTPROC/SOURCES/IO.f90}}
+}
+\subsection*{Data Types}
+\begin{DoxyCompactItemize}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1INDEXING}{IO\_\-CLASS::INDEXING}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READCOORD}{IO\_\-CLASS::READCOORD}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READ__DIM}{IO\_\-CLASS::READ\_\-DIM}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READ__GRID}{IO\_\-CLASS::READ\_\-GRID}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READVALUE}{IO\_\-CLASS::READVALUE}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1WRITE__TEMPER}{IO\_\-CLASS::WRITE\_\-TEMPER}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1WRITE__PROG}{IO\_\-CLASS::WRITE\_\-PROG}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READVEL}{IO\_\-CLASS::READVEL}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READVEL__BIN}{IO\_\-CLASS::READVEL\_\-BIN}
+\item 
+type \hyperlink{typeIO__CLASS_1_1IO}{IO\_\-CLASS::IO}
+\end{DoxyCompactItemize}
+\subsection*{Modules}
+\begin{DoxyCompactItemize}
+\item 
+module \hyperlink{namespaceIO__CLASS}{IO\_\-CLASS}
+
+
+\begin{DoxyCompactList}\small\item\em Controls the input and output for the underlying postprocessor. \end{DoxyCompactList}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions/Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{namespaceIO__CLASS_afb3b43393c81d05f437ae1359acf77d2}{IO\_\-CLASS::read\_\-dummy\_\-sub} (this, filename, dimen)
+\item 
+REAL(DP), dimension(:,:), pointer \hyperlink{namespaceIO__CLASS_a9fd49cecb24a51f12650f5249285c05f}{IO\_\-CLASS::field\_\-f} (this)
+\item 
+REAL \hyperlink{namespaceIO__CLASS_a16514873e600c2fbfde6897a92c88d5e}{IO\_\-CLASS::number\_\-of\_\-nodes\_\-x\_\-f} (this)
+\item 
+REAL \hyperlink{namespaceIO__CLASS_a67cf6d63ec2af6429ed8ef6885ac143a}{IO\_\-CLASS::number\_\-of\_\-nodes\_\-y\_\-f} (this)
+\item 
+REAL \hyperlink{namespaceIO__CLASS_aa9b327cdca2173b0269ec5007a8ab9f1}{IO\_\-CLASS::number\_\-of\_\-nodes\_\-z\_\-f} (this)
+\item 
+subroutine \hyperlink{IO_8f90_a8d056690126388abed5afdc417478743}{READCOORD2D} (FILENAME, COORD)
+\begin{DoxyCompactList}\small\item\em Reads coordinate data provided by file 'FILENAME'. Returns array 'COORD'. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_ad4bcb3bc1474b8196591ffba79abde7a}{READ\_\-DIM} (FILEX, FILEY, FILEZ, DIMEN)
+\begin{DoxyCompactList}\small\item\em Reads dimension of the problem. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_a72880371212132741d2bddfd1c2a79c7}{READ\_\-GRID} (FILEX, FILEY, FILEZ, GRIDX, GRIDY, GRIDZ)
+\begin{DoxyCompactList}\small\item\em Reads coordinate vectors returns arrays X, Y ,Z. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_ac5cecf3c7d359ad0dd6cf8ab12c68cb8}{READVALUE} (FILENAME, VAR)
+\begin{DoxyCompactList}\small\item\em Reads temperature data provided by file 'FILENAME'. Returns array 'VAR'. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_aedc8ea8b516e912fcbc924a085c1b4e8}{WRITE\_\-PROG} (FILENAME, PROG\_\-VAR)
+\begin{DoxyCompactList}\small\item\em write out progress variable. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_ab65e4f53698a6c806ec3a68d759c1768}{WRITE\_\-TEMPER} (FILENAME, TEMPER)
+\begin{DoxyCompactList}\small\item\em write out temperature. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_a5d81c3b95f841c54113f38818d021b03}{INDEXING} (COORD, NUMBER\_\-OF\_\-NODES, INDX, NX, INDY, NY, INDZ, NZ)
+\begin{DoxyCompactList}\small\item\em Provides vectors that control the indexing into the three velocity component arrays. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_a824c1f7304ce08200aca3e2bedb17a55}{READVEL} (FILENAME, UUX, UUY, UUZ)
+\begin{DoxyCompactList}\small\item\em Provides arrays for the velocity components. \end{DoxyCompactList}\item 
+subroutine \hyperlink{IO_8f90_a32a0f0ef4a4fd12825e50389838f8772}{READVEL\_\-BIN} (FILENAME, UX, VY, WZ)
+\begin{DoxyCompactList}\small\item\em Provides arrays for the velocity components. The data is read from a binary input. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{IO_8f90_a5d81c3b95f841c54113f38818d021b03}{
+\index{IO.f90@{IO.f90}!INDEXING@{INDEXING}}
+\index{INDEXING@{INDEXING}!IO.f90@{IO.f90}}
+\subsubsection[{INDEXING}]{\setlength{\rightskip}{0pt plus 5cm}subroutine INDEXING (
+\begin{DoxyParamCaption}
+\item[{REAL(DP),dimension(:,:)}]{COORD, }
+\item[{INTEGER(SP)}]{NUMBER\_\-OF\_\-NODES, }
+\item[{INTEGER(SP),dimension(:),intent(inout)}]{INDX, }
+\item[{INTEGER(SP),intent(inout)}]{NX, }
+\item[{INTEGER(SP),dimension(:),intent(inout)}]{INDY, }
+\item[{INTEGER(SP),intent(inout)}]{NY, }
+\item[{INTEGER(SP),dimension(:),intent(inout),optional}]{INDZ, }
+\item[{INTEGER(SP),intent(inout),optional}]{NZ}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_a5d81c3b95f841c54113f38818d021b03}
+
+
+Provides vectors that control the indexing into the three velocity component arrays. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em COORD} & Array containing node coordinates \\
+\hline
+\mbox{\tt in}  & {\em NUMBER\_\-OF\_\-NODES} & Number of nodes \\
+\hline
+\mbox{\tt out}  & {\em INDX} & Vector containing x indices \\
+\hline
+\mbox{\tt out}  & {\em INDY} & Vector containing y indices \\
+\hline
+\mbox{\tt out}  & {\em INDZ} & Vector containing z indices \\
+\hline
+\mbox{\tt out}  & {\em NX} & Number of nodes in x direction \\
+\hline
+\mbox{\tt out}  & {\em NY} & Number of nodes in y direction \\
+\hline
+\mbox{\tt out}  & {\em NZ} & Number of nodes in z direction \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 529 of file IO.f90.
+
+\hypertarget{IO_8f90_ad4bcb3bc1474b8196591ffba79abde7a}{
+\index{IO.f90@{IO.f90}!READ\_\-DIM@{READ\_\-DIM}}
+\index{READ\_\-DIM@{READ\_\-DIM}!IO.f90@{IO.f90}}
+\subsubsection[{READ\_\-DIM}]{\setlength{\rightskip}{0pt plus 5cm}subroutine READ\_\-DIM (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILEX, }
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILEY, }
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILEZ, }
+\item[{INTEGER(SP),dimension(:),intent(inout)}]{DIMEN}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_ad4bcb3bc1474b8196591ffba79abde7a}
+
+
+Reads dimension of the problem. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the data to be read. \\
+\hline
+\mbox{\tt out}  & {\em Array} & of dimensions of the problem \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 328 of file IO.f90.
+
+\hypertarget{IO_8f90_a72880371212132741d2bddfd1c2a79c7}{
+\index{IO.f90@{IO.f90}!READ\_\-GRID@{READ\_\-GRID}}
+\index{READ\_\-GRID@{READ\_\-GRID}!IO.f90@{IO.f90}}
+\subsubsection[{READ\_\-GRID}]{\setlength{\rightskip}{0pt plus 5cm}subroutine READ\_\-GRID (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILEX, }
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILEY, }
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILEZ, }
+\item[{REAL(DP),dimension(:),intent(inout)}]{GRIDX, }
+\item[{REAL(DP),dimension(:),intent(inout)}]{GRIDY, }
+\item[{REAL(DP),dimension(:),intent(inout)}]{GRIDZ}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_a72880371212132741d2bddfd1c2a79c7}
+
+
+Reads coordinate vectors returns arrays X, Y ,Z. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the data to be read. \\
+\hline
+\mbox{\tt out}  & {\em X} & Array containing x coordinates \\
+\hline
+\mbox{\tt out}  & {\em Y} & Array containing y coordinates \\
+\hline
+\mbox{\tt out}  & {\em Z} & Array containing z coordinates \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 383 of file IO.f90.
+
+\hypertarget{IO_8f90_a8d056690126388abed5afdc417478743}{
+\index{IO.f90@{IO.f90}!READCOORD2D@{READCOORD2D}}
+\index{READCOORD2D@{READCOORD2D}!IO.f90@{IO.f90}}
+\subsubsection[{READCOORD2D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine READCOORD2D (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILENAME, }
+\item[{REAL(DP),dimension(:,:),intent(inout)}]{COORD}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_a8d056690126388abed5afdc417478743}
+
+
+Reads coordinate data provided by file 'FILENAME'. Returns array 'COORD'. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the node data. \\
+\hline
+\mbox{\tt out}  & {\em COORD} & Array containing node coordinates \\
+\hline
+\mbox{\tt out}  & {\em NUMBER\_\-OF\_\-NODES} & Number of nodes \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 294 of file IO.f90.
+
+
+
+Referenced by SPECTRAL\_\-ANALYSIS().
+
+\hypertarget{IO_8f90_ac5cecf3c7d359ad0dd6cf8ab12c68cb8}{
+\index{IO.f90@{IO.f90}!READVALUE@{READVALUE}}
+\index{READVALUE@{READVALUE}!IO.f90@{IO.f90}}
+\subsubsection[{READVALUE}]{\setlength{\rightskip}{0pt plus 5cm}subroutine READVALUE (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILENAME, }
+\item[{REAL(DP),dimension(:,:,:),intent(inout)}]{VAR}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_ac5cecf3c7d359ad0dd6cf8ab12c68cb8}
+
+
+Reads temperature data provided by file 'FILENAME'. Returns array 'VAR'. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the data to be read. \\
+\hline
+\mbox{\tt out}  & {\em VAR} & Array containing node temperatures \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 439 of file IO.f90.
+
+\hypertarget{IO_8f90_a824c1f7304ce08200aca3e2bedb17a55}{
+\index{IO.f90@{IO.f90}!READVEL@{READVEL}}
+\index{READVEL@{READVEL}!IO.f90@{IO.f90}}
+\subsubsection[{READVEL}]{\setlength{\rightskip}{0pt plus 5cm}subroutine READVEL (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILENAME, }
+\item[{REAL(DP),dimension(:,:,:),intent(inout)}]{UUX, }
+\item[{REAL(DP),dimension(:,:,:),intent(inout)}]{UUY, }
+\item[{REAL(DP),dimension(:,:,:),intent(inout),optional}]{UUZ}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_a824c1f7304ce08200aca3e2bedb17a55}
+
+
+Provides arrays for the velocity components. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the velocity data \\
+\hline
+\mbox{\tt in}  & {\em NUMBER\_\-OF\_\-NODES} & Number of nodes \\
+\hline
+\mbox{\tt in}  & {\em INDX} & Vector containing x indices \\
+\hline
+\mbox{\tt in}  & {\em INDY} & Vector containing y indices \\
+\hline
+\mbox{\tt in}  & {\em INDZ} & Vector containing z indices \\
+\hline
+\mbox{\tt out}  & {\em UUX} & Array of x-\/velocity components \\
+\hline
+\mbox{\tt out}  & {\em UUY} & Array of y-\/velocity components \\
+\hline
+\mbox{\tt out}  & {\em UUZ} & Array of z-\/velocity components \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 595 of file IO.f90.
+
+\hypertarget{IO_8f90_a32a0f0ef4a4fd12825e50389838f8772}{
+\index{IO.f90@{IO.f90}!READVEL\_\-BIN@{READVEL\_\-BIN}}
+\index{READVEL\_\-BIN@{READVEL\_\-BIN}!IO.f90@{IO.f90}}
+\subsubsection[{READVEL\_\-BIN}]{\setlength{\rightskip}{0pt plus 5cm}subroutine READVEL\_\-BIN (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILENAME, }
+\item[{REAL(SP),dimension(:,:,:)}]{UX, }
+\item[{REAL(SP),dimension(:,:,:)}]{VY, }
+\item[{REAL(SP),dimension(:,:,:)}]{WZ}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_a32a0f0ef4a4fd12825e50389838f8772}
+
+
+Provides arrays for the velocity components. The data is read from a binary input. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the velocity data \\
+\hline
+\mbox{\tt out}  & {\em U} & Array of x-\/velocity components \\
+\hline
+\mbox{\tt out}  & {\em V} & Array of y-\/velocity components \\
+\hline
+\mbox{\tt out}  & {\em W} & Array of z-\/velocity components \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 664 of file IO.f90.
+
+\hypertarget{IO_8f90_aedc8ea8b516e912fcbc924a085c1b4e8}{
+\index{IO.f90@{IO.f90}!WRITE\_\-PROG@{WRITE\_\-PROG}}
+\index{WRITE\_\-PROG@{WRITE\_\-PROG}!IO.f90@{IO.f90}}
+\subsubsection[{WRITE\_\-PROG}]{\setlength{\rightskip}{0pt plus 5cm}subroutine WRITE\_\-PROG (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILENAME, }
+\item[{REAL(DP),dimension(:,:,:),intent(in)}]{PROG\_\-VAR}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_aedc8ea8b516e912fcbc924a085c1b4e8}
+
+
+write out progress variable. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the node data. \\
+\hline
+\mbox{\tt in}  & {\em PROG\_\-VAR} & Specifies the name of the file containing the progress variable data. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 468 of file IO.f90.
+
+\hypertarget{IO_8f90_ab65e4f53698a6c806ec3a68d759c1768}{
+\index{IO.f90@{IO.f90}!WRITE\_\-TEMPER@{WRITE\_\-TEMPER}}
+\index{WRITE\_\-TEMPER@{WRITE\_\-TEMPER}!IO.f90@{IO.f90}}
+\subsubsection[{WRITE\_\-TEMPER}]{\setlength{\rightskip}{0pt plus 5cm}subroutine WRITE\_\-TEMPER (
+\begin{DoxyParamCaption}
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{FILENAME, }
+\item[{REAL(DP),dimension(:,:,:),intent(in)}]{TEMPER}
+\end{DoxyParamCaption}
+)}}
+\label{IO_8f90_ab65e4f53698a6c806ec3a68d759c1768}
+
+
+write out temperature. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em FILENAME} & Specifies the name of the file containing the temperature data. \\
+\hline
+\mbox{\tt in}  & {\em TEMPER} & Specifies the name of the file containing the temperature data. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 495 of file IO.f90.
+

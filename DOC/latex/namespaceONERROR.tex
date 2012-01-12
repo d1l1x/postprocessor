@@ -1,0 +1,90 @@
+\hypertarget{namespaceONERROR}{
+\section{ONERROR Module Reference}
+\label{namespaceONERROR}\index{ONERROR@{ONERROR}}
+}
+
+
+Contains definition of error messages.  
+
+
+\subsection*{Functions/Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{namespaceONERROR_a886bc1a5bcf6a0b449daef743c63ca96}{ALLOCATION\_\-ERROR} (IERR)
+\begin{DoxyCompactList}\small\item\em Prints allocation error message. \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceONERROR_a65114034ce76f426e610df6aa8c4e69b}{DEALLOCATION\_\-ERROR} (IERR, UNIT\_\-VALUE)
+\begin{DoxyCompactList}\small\item\em Prints deallocation error message. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Contains definition of error messages. \begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+
+\subsection{Function/Subroutine Documentation}
+\hypertarget{namespaceONERROR_a886bc1a5bcf6a0b449daef743c63ca96}{
+\index{ONERROR@{ONERROR}!ALLOCATION\_\-ERROR@{ALLOCATION\_\-ERROR}}
+\index{ALLOCATION\_\-ERROR@{ALLOCATION\_\-ERROR}!ONERROR@{ONERROR}}
+\subsubsection[{ALLOCATION\_\-ERROR}]{\setlength{\rightskip}{0pt plus 5cm}subroutine ONERROR::ALLOCATION\_\-ERROR (
+\begin{DoxyParamCaption}
+\item[{INTEGER}]{IERR}
+\end{DoxyParamCaption}
+)}}
+\label{namespaceONERROR_a886bc1a5bcf6a0b449daef743c63ca96}
+
+
+Prints allocation error message. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em IERR} & Error descriptor \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 28 of file ONERROR.f90.
+
+
+
+Referenced by SPECTRAL\_\-ANALYSIS().
+
+\hypertarget{namespaceONERROR_a65114034ce76f426e610df6aa8c4e69b}{
+\index{ONERROR@{ONERROR}!DEALLOCATION\_\-ERROR@{DEALLOCATION\_\-ERROR}}
+\index{DEALLOCATION\_\-ERROR@{DEALLOCATION\_\-ERROR}!ONERROR@{ONERROR}}
+\subsubsection[{DEALLOCATION\_\-ERROR}]{\setlength{\rightskip}{0pt plus 5cm}subroutine ONERROR::DEALLOCATION\_\-ERROR (
+\begin{DoxyParamCaption}
+\item[{INTEGER}]{IERR, }
+\item[{INTEGER}]{UNIT\_\-VALUE}
+\end{DoxyParamCaption}
+)}}
+\label{namespaceONERROR_a65114034ce76f426e610df6aa8c4e69b}
+
+
+Prints deallocation error message. 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em IERR} & Error descriptor \\
+\hline
+\mbox{\tt in}  & {\em UNIT\_\-VALUE} & Error descriptor\par
+ 1 -\/-\/ COORD\par
+ 2 -\/-\/ INDX\par
+ 3 -\/-\/ INDY\par
+ 4 -\/-\/ INDZ\par
+ 5 -\/-\/ UUX\par
+ 6 -\/-\/ UUY\par
+ 7 -\/-\/ UUZ\par
+ \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 53 of file ONERROR.f90.
+

@@ -1,0 +1,59 @@
+\hypertarget{STATISTICS_8f90}{
+\section{/home/fdietzsc/fortran/POSTPROC/SOURCES/STATISTICS.f90 File Reference}
+\label{STATISTICS_8f90}\index{/home/fdietzsc/fortran/POSTPROC/SOURCES/STATISTICS.f90@{/home/fdietzsc/fortran/POSTPROC/SOURCES/STATISTICS.f90}}
+}
+\subsection*{Data Types}
+\begin{DoxyCompactItemize}
+\item 
+interface \hyperlink{interfaceSTATISTICS_1_1MEAN}{STATISTICS::MEAN}
+\item 
+interface \hyperlink{interfaceSTATISTICS_1_1CORREL}{STATISTICS::CORREL}
+\item 
+interface \hyperlink{interfaceSTATISTICS_1_1SHIFT}{STATISTICS::SHIFT}
+\item 
+interface \hyperlink{interfaceSTATISTICS_1_1SPECTR}{STATISTICS::SPECTR}
+\item 
+interface \hyperlink{interfaceSTATISTICS_1_1DEVIAT}{STATISTICS::DEVIAT}
+\end{DoxyCompactItemize}
+\subsection*{Modules}
+\begin{DoxyCompactItemize}
+\item 
+module \hyperlink{namespaceSTATISTICS}{STATISTICS}
+
+
+\begin{DoxyCompactList}\small\item\em Provides functions for statistical computations. \end{DoxyCompactList}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions/Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{namespaceSTATISTICS_a4a3e7e4d1eb020e1128c01e60da55ead}{STATISTICS::SPEC2D} (IN1, IN2, NX, NY, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the three dimensional energy spectrum as the fourier transformation\par
+ of the auto-\/correlation function. In the first step all three velocity\par
+ components are fourier transformed. The second step consists of multiplying\par
+ each transform with its conjugate complex in order to get the elements of the\par
+ main diagonal of the velocity spectrum tensor \[\hat{R}_{ii}\left(\kappa,t\right)= \left<\hat{u}_i^{*}\left(\kappa,t\right)\,\hat{u}_i\left(\kappa,t\right)\right>= \Phi_{ii}\left(\kappa,t\right).\] After the components of $\Phi$ have been determined an integration over\par
+ spherical shells has to be computed in order to get the three dimensional\par
+ velocity spectrum. \[ E(k)=\oint\frac{1}{2}\Phi_{ii}(\kappa)\,d\mathrm{S}(\kappa) \] \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceSTATISTICS_abb792b2e62e57165b7e93764e07d1100}{STATISTICS::SPEC3D} (PROCNUM, IN1, IN2, IN3, NX, NY, NZ, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the three dimensional energy spectrum as the fourier transformation\par
+ of the auto-\/correlation function. In the first step all three velocity\par
+ components are fourier transformed. The second step consists of multiplying\par
+ each transform with its conjugate complex in order to get the elements of the\par
+ main diagonal of the velocity spectrum tensor \[\hat{R}_{ii}\left(\kappa,t\right)= \left<\hat{u}_i^{*}\left(\kappa,t\right)\,\hat{u}_i\left(\kappa,t\right)\right>= \Phi_{ii}\left(\kappa,t\right).\] After the components of $\Phi$ have been determined an integration over\par
+ spherical shells has to be computed in order to get the three dimensional\par
+ velocity spectrum. \[ E(k)=\oint\frac{1}{2}\Phi_{ii}(\kappa)\,d\mathrm{S}(\kappa) \] \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceSTATISTICS_a96f2830bd74ef7e612bb9b567a488fcb}{STATISTICS::DEVIATION} (VELO, NX, NY, NZ, SIGMA)
+\begin{DoxyCompactList}\small\item\em Computes the standard deviation of the 3D input array. It is computed according to \[\sigma = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2}, {\rm \ \ where\ \ } \mu = \frac{1}{N} \sum_{i=1}^N x_i. \] \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceSTATISTICS_ac51d5b789da17893b95107ddcb97813f}{STATISTICS::FFTSHIFT} (IN, NX, NY)
+\begin{DoxyCompactList}\small\item\em Shifts the input array towards the zero frequencies. \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceSTATISTICS_a6631e38a843e8bfa986d426daebd6f4c}{STATISTICS::CORREL3D} (IN, NX, NY, NZ, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the auto-\/correlation coefficients of the 3D input array. The general definition of the auto-\/correlation (often exressed as the covariance) function is \[\mathrm{cov}(f,f)=\left(f\star f\right)(r)=\int_0^{\infty}f(x)\,f(x+r)\,dx \] One important feature of the correlation function is that is satisfies \[\mathcal{F}\{f\star f\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{f\}. \] In the code this allows for fast computations of the correlation function using the FFT approach. In order to get the correlation coefficients, the previously mentioned function has to be devided by standard deviations of the input arrays. \[r=\frac{\mathrm{cov}(f,f)}{\sigma_f\,\sigma_f} \] \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceSTATISTICS_a2529efc59bb06c5f2280df7277bf5c7d}{STATISTICS::XCORREL} (IN1, IN2, NX, NY, NZ, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the cross-\/correlation coefficients of the 3D input arrays. The general definition of the cross-\/correlation (often exressed as the covariance) function is \[\mathrm{cov}(f,g)=\left(f\star g\right)(r)=\int_0^{\infty}f(x)\,g(x+r)\,dx \] One important feature of the correlation function is that is satisfies \[\mathcal{F}\{f\star g\}=(\mathcal{F}\{f\})^*\cdot\mathcal{F}\{g\}. \] In the code this allows for fast computations of the correlation function using the FFT approach. In order to get the correlation coefficients, the previously mentioned function has to be devided by standard deviations of the input arrays. \[r=\frac{\mathrm{cov}(f,g)}{\sigma_f\,\sigma_g} \] Computes the cross-\/correlation of the 3D input array \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceSTATISTICS_a0e5d171eb0600a926c45883d16628bc5}{STATISTICS::MEAN1D} (M, NX)
+\item 
+subroutine \hyperlink{namespaceSTATISTICS_a95b82ef7e03a03d4b2ff850710558843}{STATISTICS::MEAN3D} (M, NX, NY, NZ, MEAN)
+\begin{DoxyCompactList}\small\item\em Shifts the input array towards the zero frequencies. \end{DoxyCompactList}\item 
+subroutine \hyperlink{namespaceSTATISTICS_a2e2608ba8eefb8af3541e4e9a09a6482}{STATISTICS::MEAN4D} (M, NX, NY, NZ, DIM, MEAN)
+\end{DoxyCompactItemize}

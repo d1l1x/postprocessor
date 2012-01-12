@@ -1,0 +1,135 @@
+\hypertarget{interfaceSTATISTICS_1_1SPECTR}{
+\section{STATISTICS::SPECTR Interface Reference}
+\label{interfaceSTATISTICS_1_1SPECTR}\index{STATISTICS::SPECTR@{STATISTICS::SPECTR}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1SPECTR_a806aa0960e71efcfef612b6254cf174f}{SPEC3D} (PROCNUM, IN1, IN2, IN3, NX, NY, NZ, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the three dimensional energy spectrum as the fourier transformation\par
+ of the auto-\/correlation function. In the first step all three velocity\par
+ components are fourier transformed. The second step consists of multiplying\par
+ each transform with its conjugate complex in order to get the elements of the\par
+ main diagonal of the velocity spectrum tensor \[\hat{R}_{ii}\left(\kappa,t\right)= \left<\hat{u}_i^{*}\left(\kappa,t\right)\,\hat{u}_i\left(\kappa,t\right)\right>= \Phi_{ii}\left(\kappa,t\right).\] After the components of $\Phi$ have been determined an integration over\par
+ spherical shells has to be computed in order to get the three dimensional\par
+ velocity spectrum. \[ E(k)=\oint\frac{1}{2}\Phi_{ii}(\kappa)\,d\mathrm{S}(\kappa) \] \end{DoxyCompactList}\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1SPECTR_aa7d09b2b0ae1a3a1c5088312412fe0e6}{SPEC2D} (IN1, IN2, NX, NY, OUT)
+\begin{DoxyCompactList}\small\item\em Computes the three dimensional energy spectrum as the fourier transformation\par
+ of the auto-\/correlation function. In the first step all three velocity\par
+ components are fourier transformed. The second step consists of multiplying\par
+ each transform with its conjugate complex in order to get the elements of the\par
+ main diagonal of the velocity spectrum tensor \[\hat{R}_{ii}\left(\kappa,t\right)= \left<\hat{u}_i^{*}\left(\kappa,t\right)\,\hat{u}_i\left(\kappa,t\right)\right>= \Phi_{ii}\left(\kappa,t\right).\] After the components of $\Phi$ have been determined an integration over\par
+ spherical shells has to be computed in order to get the three dimensional\par
+ velocity spectrum. \[ E(k)=\oint\frac{1}{2}\Phi_{ii}(\kappa)\,d\mathrm{S}(\kappa) \] \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 24 of file STATISTICS.f90.
+
+
+
+\subsection{Member Function/Subroutine Documentation}
+\hypertarget{interfaceSTATISTICS_1_1SPECTR_aa7d09b2b0ae1a3a1c5088312412fe0e6}{
+\index{STATISTICS::SPECTR@{STATISTICS::SPECTR}!SPEC2D@{SPEC2D}}
+\index{SPEC2D@{SPEC2D}!STATISTICS::SPECTR@{STATISTICS::SPECTR}}
+\subsubsection[{SPEC2D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::SPECTR::SPEC2D (
+\begin{DoxyParamCaption}
+\item[{REAL(DP),dimension(:,:,:)}]{IN1, }
+\item[{REAL(DP),dimension(:,:,:)}]{IN2, }
+\item[{INTEGER(SP)}]{NX, }
+\item[{INTEGER(SP)}]{NY, }
+\item[{COMPLEX(DPC),dimension(:),intent(inout)}]{OUT}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1SPECTR_aa7d09b2b0ae1a3a1c5088312412fe0e6}
+
+
+Computes the three dimensional energy spectrum as the fourier transformation\par
+ of the auto-\/correlation function. In the first step all three velocity\par
+ components are fourier transformed. The second step consists of multiplying\par
+ each transform with its conjugate complex in order to get the elements of the\par
+ main diagonal of the velocity spectrum tensor \[\hat{R}_{ii}\left(\kappa,t\right)= \left<\hat{u}_i^{*}\left(\kappa,t\right)\,\hat{u}_i\left(\kappa,t\right)\right>= \Phi_{ii}\left(\kappa,t\right).\] After the components of $\Phi$ have been determined an integration over\par
+ spherical shells has to be computed in order to get the three dimensional\par
+ velocity spectrum. \[ E(k)=\oint\frac{1}{2}\Phi_{ii}(\kappa)\,d\mathrm{S}(\kappa) \] 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch Computes the two dimensional spectrum 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em IN1} & 3D array of first velocity component \\
+\hline
+\mbox{\tt in}  & {\em IN2} & 3D array of second velocity component \\
+\hline
+\mbox{\tt in}  & {\em NX} & Number of nodes in x direction \\
+\hline
+\mbox{\tt in}  & {\em NY} & Number of nodes in y direction \\
+\hline
+\mbox{\tt out}  & {\em OUT} & Vector containing the spectrum for the input velocities \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 64 of file STATISTICS.f90.
+
+\hypertarget{interfaceSTATISTICS_1_1SPECTR_a806aa0960e71efcfef612b6254cf174f}{
+\index{STATISTICS::SPECTR@{STATISTICS::SPECTR}!SPEC3D@{SPEC3D}}
+\index{SPEC3D@{SPEC3D}!STATISTICS::SPECTR@{STATISTICS::SPECTR}}
+\subsubsection[{SPEC3D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::SPECTR::SPEC3D (
+\begin{DoxyParamCaption}
+\item[{INTEGER(SP)}]{PROCNUM, }
+\item[{REAL(DP),dimension(:,:,:)}]{IN1, }
+\item[{REAL(DP),dimension(:,:,:)}]{IN2, }
+\item[{REAL(DP),dimension(:,:,:)}]{IN3, }
+\item[{INTEGER(SP)}]{NX, }
+\item[{INTEGER(SP)}]{NY, }
+\item[{INTEGER(SP)}]{NZ, }
+\item[{COMPLEX(DPC),dimension(:),intent(inout)}]{OUT}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1SPECTR_a806aa0960e71efcfef612b6254cf174f}
+
+
+Computes the three dimensional energy spectrum as the fourier transformation\par
+ of the auto-\/correlation function. In the first step all three velocity\par
+ components are fourier transformed. The second step consists of multiplying\par
+ each transform with its conjugate complex in order to get the elements of the\par
+ main diagonal of the velocity spectrum tensor \[\hat{R}_{ii}\left(\kappa,t\right)= \left<\hat{u}_i^{*}\left(\kappa,t\right)\,\hat{u}_i\left(\kappa,t\right)\right>= \Phi_{ii}\left(\kappa,t\right).\] After the components of $\Phi$ have been determined an integration over\par
+ spherical shells has to be computed in order to get the three dimensional\par
+ velocity spectrum. \[ E(k)=\oint\frac{1}{2}\Phi_{ii}(\kappa)\,d\mathrm{S}(\kappa) \] 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch Computes the three dimensional spectrum 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em IN1} & 3D array of first velocity component \\
+\hline
+\mbox{\tt in}  & {\em IN2} & 3D array of second velocity component \\
+\hline
+\mbox{\tt in}  & {\em IN3} & 3D array of third velocity component \\
+\hline
+\mbox{\tt in}  & {\em NX} & Number of nodes in x direction \\
+\hline
+\mbox{\tt in}  & {\em NY} & Number of nodes in y direction \\
+\hline
+\mbox{\tt in}  & {\em NZ} & Number of nodes in z direction \\
+\hline
+\mbox{\tt out}  & {\em Vector} & containing the spectrum for the input velocities \\
+\hline
+\end{DoxyParams}
+\begin{Desc}
+\item[\hyperlink{todo__todo000001}{Todo}]Implementation of the 3D spectrum computation\par
+ eMail from Michael Gauding from July 12th 2011\par
+ concerns the integration of spherical shells \end{Desc}
+
+
+Definition at line 156 of file STATISTICS.f90.
+
+
+
+The documentation for this interface was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+/home/fdietzsc/fortran/POSTPROC/SOURCES/\hyperlink{STATISTICS_8f90}{STATISTICS.f90}\end{DoxyCompactItemize}

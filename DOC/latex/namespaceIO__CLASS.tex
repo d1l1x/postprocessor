@@ -1,0 +1,141 @@
+\hypertarget{namespaceIO__CLASS}{
+\section{IO\_\-CLASS Module Reference}
+\label{namespaceIO__CLASS}\index{IO\_\-CLASS@{IO\_\-CLASS}}
+}
+
+
+Controls the input and output for the underlying postprocessor.  
+
+
+\subsection*{Data Types}
+\begin{DoxyCompactItemize}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1INDEXING}{INDEXING}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READCOORD}{READCOORD}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READ__DIM}{READ\_\-DIM}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READ__GRID}{READ\_\-GRID}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READVALUE}{READVALUE}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1WRITE__TEMPER}{WRITE\_\-TEMPER}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1WRITE__PROG}{WRITE\_\-PROG}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READVEL}{READVEL}
+\item 
+interface \hyperlink{interfaceIO__CLASS_1_1READVEL__BIN}{READVEL\_\-BIN}
+\item 
+type \hyperlink{typeIO__CLASS_1_1IO}{IO}
+\end{DoxyCompactItemize}
+\subsection*{Functions/Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{namespaceIO__CLASS_afb3b43393c81d05f437ae1359acf77d2}{read\_\-dummy\_\-sub} (this, filename, dimen)
+\item 
+REAL(DP), dimension(:,:), pointer \hyperlink{namespaceIO__CLASS_a9fd49cecb24a51f12650f5249285c05f}{field\_\-f} (this)
+\item 
+REAL \hyperlink{namespaceIO__CLASS_a16514873e600c2fbfde6897a92c88d5e}{number\_\-of\_\-nodes\_\-x\_\-f} (this)
+\item 
+REAL \hyperlink{namespaceIO__CLASS_a67cf6d63ec2af6429ed8ef6885ac143a}{number\_\-of\_\-nodes\_\-y\_\-f} (this)
+\item 
+REAL \hyperlink{namespaceIO__CLASS_aa9b327cdca2173b0269ec5007a8ab9f1}{number\_\-of\_\-nodes\_\-z\_\-f} (this)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Controls the input and output for the underlying postprocessor. \begin{DoxyAuthor}{Author}
+Felix Dietzsch 
+\end{DoxyAuthor}
+
+
+\subsection{Function/Subroutine Documentation}
+\hypertarget{namespaceIO__CLASS_a9fd49cecb24a51f12650f5249285c05f}{
+\index{IO\_\-CLASS@{IO\_\-CLASS}!field\_\-f@{field\_\-f}}
+\index{field\_\-f@{field\_\-f}!IO_CLASS@{IO\_\-CLASS}}
+\subsubsection[{field\_\-f}]{\setlength{\rightskip}{0pt plus 5cm}REAL(DP),dimension(:,:),pointer IO\_\-CLASS::field\_\-f (
+\begin{DoxyParamCaption}
+\item[{CLASS(IO)}]{this}
+\end{DoxyParamCaption}
+)}}
+\label{namespaceIO__CLASS_a9fd49cecb24a51f12650f5249285c05f}
+
+
+Definition at line 241 of file IO.f90.
+
+
+
+Referenced by IO\_\-CLASS::IO::field().
+
+\hypertarget{namespaceIO__CLASS_a16514873e600c2fbfde6897a92c88d5e}{
+\index{IO\_\-CLASS@{IO\_\-CLASS}!number\_\-of\_\-nodes\_\-x\_\-f@{number\_\-of\_\-nodes\_\-x\_\-f}}
+\index{number\_\-of\_\-nodes\_\-x\_\-f@{number\_\-of\_\-nodes\_\-x\_\-f}!IO_CLASS@{IO\_\-CLASS}}
+\subsubsection[{number\_\-of\_\-nodes\_\-x\_\-f}]{\setlength{\rightskip}{0pt plus 5cm}REAL IO\_\-CLASS::number\_\-of\_\-nodes\_\-x\_\-f (
+\begin{DoxyParamCaption}
+\item[{CLASS(IO)}]{this}
+\end{DoxyParamCaption}
+)}}
+\label{namespaceIO__CLASS_a16514873e600c2fbfde6897a92c88d5e}
+
+
+Definition at line 261 of file IO.f90.
+
+
+
+Referenced by IO\_\-CLASS::IO::NX().
+
+\hypertarget{namespaceIO__CLASS_a67cf6d63ec2af6429ed8ef6885ac143a}{
+\index{IO\_\-CLASS@{IO\_\-CLASS}!number\_\-of\_\-nodes\_\-y\_\-f@{number\_\-of\_\-nodes\_\-y\_\-f}}
+\index{number\_\-of\_\-nodes\_\-y\_\-f@{number\_\-of\_\-nodes\_\-y\_\-f}!IO_CLASS@{IO\_\-CLASS}}
+\subsubsection[{number\_\-of\_\-nodes\_\-y\_\-f}]{\setlength{\rightskip}{0pt plus 5cm}REAL IO\_\-CLASS::number\_\-of\_\-nodes\_\-y\_\-f (
+\begin{DoxyParamCaption}
+\item[{CLASS(IO)}]{this}
+\end{DoxyParamCaption}
+)}}
+\label{namespaceIO__CLASS_a67cf6d63ec2af6429ed8ef6885ac143a}
+
+
+Definition at line 267 of file IO.f90.
+
+
+
+Referenced by IO\_\-CLASS::IO::NY().
+
+\hypertarget{namespaceIO__CLASS_aa9b327cdca2173b0269ec5007a8ab9f1}{
+\index{IO\_\-CLASS@{IO\_\-CLASS}!number\_\-of\_\-nodes\_\-z\_\-f@{number\_\-of\_\-nodes\_\-z\_\-f}}
+\index{number\_\-of\_\-nodes\_\-z\_\-f@{number\_\-of\_\-nodes\_\-z\_\-f}!IO_CLASS@{IO\_\-CLASS}}
+\subsubsection[{number\_\-of\_\-nodes\_\-z\_\-f}]{\setlength{\rightskip}{0pt plus 5cm}REAL IO\_\-CLASS::number\_\-of\_\-nodes\_\-z\_\-f (
+\begin{DoxyParamCaption}
+\item[{CLASS(IO)}]{this}
+\end{DoxyParamCaption}
+)}}
+\label{namespaceIO__CLASS_aa9b327cdca2173b0269ec5007a8ab9f1}
+
+
+Definition at line 273 of file IO.f90.
+
+
+
+Referenced by IO\_\-CLASS::IO::NZ().
+
+\hypertarget{namespaceIO__CLASS_afb3b43393c81d05f437ae1359acf77d2}{
+\index{IO\_\-CLASS@{IO\_\-CLASS}!read\_\-dummy\_\-sub@{read\_\-dummy\_\-sub}}
+\index{read\_\-dummy\_\-sub@{read\_\-dummy\_\-sub}!IO_CLASS@{IO\_\-CLASS}}
+\subsubsection[{read\_\-dummy\_\-sub}]{\setlength{\rightskip}{0pt plus 5cm}subroutine IO\_\-CLASS::read\_\-dummy\_\-sub (
+\begin{DoxyParamCaption}
+\item[{CLASS(IO)}]{this, }
+\item[{CHARACTER(LEN=$\ast$),intent(in)}]{filename, }
+\item[{INTEGER(SP)}]{dimen}
+\end{DoxyParamCaption}
+)}}
+\label{namespaceIO__CLASS_afb3b43393c81d05f437ae1359acf77d2}
+
+
+Definition at line 164 of file IO.f90.
+
+
+
+Referenced by IO\_\-CLASS::IO::read\_\-file().
+

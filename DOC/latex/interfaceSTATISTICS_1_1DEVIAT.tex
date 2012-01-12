@@ -1,0 +1,61 @@
+\hypertarget{interfaceSTATISTICS_1_1DEVIAT}{
+\section{STATISTICS::DEVIAT Interface Reference}
+\label{interfaceSTATISTICS_1_1DEVIAT}\index{STATISTICS::DEVIAT@{STATISTICS::DEVIAT}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{interfaceSTATISTICS_1_1DEVIAT_a8a730e84fa8632aae538e98a69718d8d}{DEVIATION} (VELO, NX, NY, NZ, SIGMA)
+\begin{DoxyCompactList}\small\item\em Computes the standard deviation of the 3D input array. It is computed according to \[\sigma = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2}, {\rm \ \ where\ \ } \mu = \frac{1}{N} \sum_{i=1}^N x_i. \] \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 27 of file STATISTICS.f90.
+
+
+
+\subsection{Member Function/Subroutine Documentation}
+\hypertarget{interfaceSTATISTICS_1_1DEVIAT_a8a730e84fa8632aae538e98a69718d8d}{
+\index{STATISTICS::DEVIAT@{STATISTICS::DEVIAT}!DEVIATION@{DEVIATION}}
+\index{DEVIATION@{DEVIATION}!STATISTICS::DEVIAT@{STATISTICS::DEVIAT}}
+\subsubsection[{DEVIATION}]{\setlength{\rightskip}{0pt plus 5cm}subroutine STATISTICS::DEVIAT::DEVIATION (
+\begin{DoxyParamCaption}
+\item[{REAL(DP),dimension(:,:,:)}]{VELO, }
+\item[{INTEGER(SP)}]{NX, }
+\item[{INTEGER(SP)}]{NY, }
+\item[{}]{NZ, }
+\item[{REAL(DP)}]{SIGMA}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceSTATISTICS_1_1DEVIAT_a8a730e84fa8632aae538e98a69718d8d}
+
+
+Computes the standard deviation of the 3D input array. It is computed according to \[\sigma = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2}, {\rm \ \ where\ \ } \mu = \frac{1}{N} \sum_{i=1}^N x_i. \] 
+
+\begin{DoxyAuthor}{Author}
+Felix Dietzsch Computes the standard deviation of the 3D input array. 
+\end{DoxyAuthor}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em VELO} & 3D array of which the deviation is to be computed \\
+\hline
+\mbox{\tt in}  & {\em NX} & Number of nodes in x direction \\
+\hline
+\mbox{\tt in}  & {\em NY} & Number of nodes in y direction \\
+\hline
+\mbox{\tt in}  & {\em NZ} & Number of nodes in z direction \\
+\hline
+\mbox{\tt out}  & {\em SIGMA} & Standard deviation of the input array velocities \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 319 of file STATISTICS.f90.
+
+
+
+The documentation for this interface was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+/home/fdietzsc/fortran/POSTPROC/SOURCES/\hyperlink{STATISTICS_8f90}{STATISTICS.f90}\end{DoxyCompactItemize}
