@@ -119,35 +119,23 @@ INTEGER  :: UNIT_VALUE
     WRITE(*,*) '======== SPECTRAL ANALYSIS ========='
     WRITE(*,*) '===================================='
     
-    DIM = 3
-    
-    WRITE(*,*) 'READING NODE COORDINATES ...'
-    !CALL FILE_IO%FILE_STATS(INDIR//'SID_GRID_2D0',DIM)
-    !NUMBER_OF_LINES = FILE_IO%NOL()
-    !NUMBER_OF_NODES = FILE_IO%NON()
-    !NX = FILE_IO%NX()
-    !NY = FILE_IO%NY()
-    !NZ = FILE_IO%NZ()
-    !WRITE(*,*) 'Number of Nodes in the domain',NUMBER_OF_LINES
-    !IF (DIM.GT.2) THEN
-        !ALLOCATE(COORD(3,NUMBER_OF_LINES),STAT=IERR)
-    !ELSE
-        !ALLOCATE(COORD(2,NUMBER_OF_LINES),STAT=IERR)
-    !END IF
-    !CALL FILE_IO%READ_FILE(INDIR//'SID_GRID_2D0',DIM)
-    !WRITE(*,*) COORD(1,1000)
-    !NUMBER_OF_LINES = FILE_IO%NOL()
-    !NUMBER_OF_NODES = FILE_IO%NON()
-    !WRITE(*,*) NUMBER_OF_NODES,NUMBER_OF_LINES
-    !NX = FILE_IO%NX()
-    !NY = FILE_IO%NY()
-    !NZ = FILE_IO%NZ()
-    !ALLOCATE(COORD(DIM,NUMBER_OF_NODES))
     PRINT*,'READING DIMENSION...'
     CALL READ_DIM("./INPUT/GRIDX_UFORM",&
                   "./INPUT/GRIDY_UFORM",&
                   "./INPUT/GRIDZ_UFORM",&
                    DIMEN)
+    IF (dimen(3).EQ.1.AND.dimen(2).EQ.1) THEN
+        PRINT*,"We have a 1D problem"
+        DIM=1
+    ELSEIF (dimen(3).EQ.1) THEN
+        PRINT*,"We have a 2D problem"
+        DIM=2
+    ELSE
+        PRINT*,"We have a 3D problem"
+        DIM=3
+    END IF
+
+    PRINT*,dimen(1),dimen(2),dimen(3)
     PRINT*,'DONE'
     PRINT*,'READING GRID'
     ALLOCATE(GRIDX(DIMEN(1)))
