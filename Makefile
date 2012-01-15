@@ -2,9 +2,6 @@ F90=gfortran
 CC=gcc
 
 RM = \rm -rf
-CP = \cp
-MV = \mv
-LN = \ln -s
 
 SOURCEDIR=./SOURCES
 FFTW_INC=-I$(SOURCEDIR)/fftw/mac/include
@@ -15,6 +12,7 @@ FGSL_INC=-I$(SOURCEDIR)/fgsl/mac/include/$(F90) $(GSL_LIB)
 FGSL_LIB=-L$(SOURCEDIR)/fgsl/mac/lib -lfgsl_$(F90)
 
 FPP=-cpp
+OPT=-O3 -Wall
 
 SOURCES=ONERROR NRTYPE TIMER_CLASS INIT IO_CLASS STATISTICS PREMIXED_CLASS SPECTRAL_ANALYSIS
 #ALGEBRA 
