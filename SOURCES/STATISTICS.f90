@@ -422,17 +422,15 @@ MODULE STATISTICS
             USE,INTRINSIC :: iso_c_binding
             IMPLICIT NONE
             include 'fftw3.f03'
-            INTEGER(SP) :: NX,NY,NZ
-            INTEGER(SP) :: DIREC
-            INTEGER(SP) :: I,J,K
-            !INTEGER(SP) :: FFTW_DIRECTION,FFTW_ESTIMATE
-            TYPE(C_PTR) :: PLAN
-            REAL(DP) :: SIGMA
+            INTEGER(SP) :: nx,ny,nz
+            INTEGER(SP) :: i,j,k
+            TYPE(C_PTR) :: plan
+            REAL(DP) :: sigma
             REAL(SP) :: N
-            REAL(DP),DIMENSION(NX,NY,NZ) :: VELO
-            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: WORKDATA
-            COMPLEX(DPC),DIMENSION(:,:,:),INTENT(INOUT) :: IN
-            COMPLEX(DPC),DIMENSION(:,:,:),INTENT(INOUT) :: OUT
+            REAL(DP),DIMENSION(nx,ny,nz) :: velo
+            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: workdata
+            COMPLEX(DPC),DIMENSION(:,:,:),INTENT(INOUT) :: in
+            COMPLEX(DPC),DIMENSION(:,:,:),INTENT(INOUT) :: out
             VELO(:,:,:) = REAL(IN(:,:,:))
             CALL DEVIATION(VELO,NX,NY,NZ,SIGMA)
             ALLOCATE(WORKDATA(NX,NY,NZ))

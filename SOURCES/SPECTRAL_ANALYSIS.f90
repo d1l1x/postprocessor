@@ -57,6 +57,7 @@ REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: PROG_VAR
 REAL(DP),DIMENSION(:,:,:,:),ALLOCATABLE :: SPEC
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: UVEL
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: VVEL
+REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: WVEL
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: DIFCOF
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: VELO
 REAL(SP),DIMENSION(:),ALLOCATABLE :: UUXY
@@ -125,19 +126,22 @@ INTEGER  :: UNIT_VALUE
                   "./INPUT/GRIDZ_UFORM",&
                    DIMEN)
     IF (dimen(3).EQ.1.AND.dimen(2).EQ.1) THEN
-        PRINT*,"We have a 1D problem"
+        PRINT*,"   We have a 1D problem"
+        PRINT*,"   Number of grid points in x: ",dimen(1)
         DIM=1
     ELSEIF (dimen(3).EQ.1) THEN
-        PRINT*,"We have a 2D problem"
+        PRINT*,"   We have a 2D problem"
+        PRINT*,"   Number of grid points in x: ",dimen(1)
+        PRINT*,"   Number of grid points in y: ",dimen(2)
         DIM=2
     ELSE
-        PRINT*,"We have a 3D problem"
+        PRINT*,"   We have a 3D problem"
+        PRINT*,"   Number of grid points in x: ",dimen(1)
+        PRINT*,"   Number of grid points in y: ",dimen(1)
+        PRINT*,"   Number of grid points in z: ",dimen(1)
         DIM=3
     END IF
-
-    PRINT*,dimen(1),dimen(2),dimen(3)
-    PRINT*,'DONE'
-    PRINT*,'READING GRID'
+    PRINT*,'READING GRID...'
     ALLOCATE(GRIDX(DIMEN(1)))
     ALLOCATE(GRIDY(DIMEN(2)))
     ALLOCATE(GRIDZ(DIMEN(3)))
@@ -145,30 +149,35 @@ INTEGER  :: UNIT_VALUE
                    "./INPUT/GRIDY_UFORM",&
                    "./INPUT/GRIDZ_UFORM",&
                    GRIDX,GRIDY,GRIDZ)
-    PRINT*,'DONE'
 
     ALLOCATE(TEMPER(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(UVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
-    ALLOCATE(VVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(DIFCOF(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(PROG_VAR(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(SPEC(SPEC_NUM,DIMEN(1),DIMEN(2),DIMEN(3)))
-    !COORD = FILE_IO%field()
-    !CALL READCOORD2D(INDIR//'SID_GRID_2D0',COORD)
     PRINT*,'READING TEMPERATUR...'
     CALL READVALUE(INDIR//'SID_TEMPER_'//ITERATION,TEMPER)
-    PRINT*,'DONE'
     PRINT*,'READING VELOCITIES...'
     PRINT*,'   READINX X VEL'
-    CALL READVALUE(INDIR//'SID_UVEL_'//ITERATION,UVEL)
-    PRINT*,'   READING V VEL'
-    CALL READVALUE(INDIR//'SID_VVEL_'//ITERATION,VVEL)
-    PRINT*,'DONE'
-    PRINT*,'   READING DIFFUSION COEF. DATA...'
-    CALL READVALUE(INDIR//'SID_D11_'//ITERATION,VVEL)
-    PRINT*,'DONE'
+    IF (DIM.EQ.1) THEN
+        CALL READVALUE(INDIR//'SID_UVEL_'//ITERATION,UVEL)
+    ELSEIF (DIM.EQ.2) THEN
+        PRINT*,'   READING V VEL'
+        ALLOCATE(VVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
+        CALL READVALUE(INDIR//'SID_VVEL_'//ITERATION,VVEL)
+    ELSEIF (DIM.EQ.3) THEN
+        PRINT*,'   READING V VEL'
+        ALLOCATE(VVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
+        CALL READVALUE(INDIR//'SID_VVEL_'//ITERATION,VVEL)
+        PRINT*,'   READING W VEL'
+        ALLOCATE(WVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
+        CALL READVALUE(INDIR//'SID_WVEL_'//ITERATION,WVEL)
+    END IF
+! read diffusion coefficient data
+    PRINT*,'READING DIFFUSION COEF. DATA...'
+    CALL READVALUE(INDIR//'SID_D11_'//ITERATION,DIFCOF)
+! read species data
     PRINT*,"READING SPECIES DATA..."
-    ! read all species data
     DO I=1,SPEC_NUM
         WRITE(ITERATOR,"(I0)") I 
         PRINT*,'   SPECIES',ITERATOR
@@ -178,7 +187,6 @@ INTEGER  :: UNIT_VALUE
     CALL COMP_PROGRESS(TEMPER,PROG_VAR,.TRUE.,SPEC(11,:,:,:),MINVAL(SPEC(11,:,:,:)),MAXVAL(SPEC(11,:,:,:)))
     ! compute c with T
     CALL COMP_PROGRESS(TEMPER,PROG_VAR,.TRUE.)
-    !PRINT*,MAXVAL(SPEC(15,:,:,:))
     !CALL WRITE_COORD('./OUTPUT/GRIDX',GRIDX)
     CALL WRITE_VALUE('./OUTPUT/TEMPER',TEMPER)
     CALL WRITE_VALUE('./OUTPUT/DIFCOF11',DIFCOF)
