@@ -1,5 +1,3 @@
-#include make.inc
-
 F90=gfortran
 CC=gcc
 
@@ -18,52 +16,20 @@ FGSL_LIB=-L$(SOURCEDIR)/fgsl/mac/lib -lfgsl_$(F90)
 
 FPP=-cpp
 
-EXECUTABLE=spectral_analysis
-
-SOURCES_OBJS=ONERROR.o\
-			 DATATYPES.o \
-			 TIMER.o\
-			 INIT.o\
-			 IO.o\
-			 ALGEBRA.o\
-			 STATISTICS.o\
-			 PREMIXED.o\
-			 SPECTRAL_ANALYSIS.o
+SOURCES=ONERROR NRTYPE TIMER_CLASS INIT IO_CLASS STATISTICS PREMIXED_CLASS SPECTRAL_ANALYSIS
+#ALGEBRA 
+SOURCES_OBJS=$(addsuffix .o,$(SOURCES))
 #
 vpath %.f90 $(SOURCEDIR)
 .PHONY: main clean
-.INTERMEDIATE: $(SOURCES_OBJS)
+.INTERMEDIATE: $(SOURCES_OBJS) $(addsuffix .mod,$(SOURCES))
 #
 main : $(SOURCES_OBJS) 
-	@echo
-	@echo "Linking Object Files   "
 	@$(F90) $(OPT) $(FPP) $(FGSL_INC) $(FFTW_INC) -o $@ $(SOURCES_OBJS) $(FFTW_LIB) $(FGSL_LIB) -lm
-	@-touch $(EXECUTABLE)
-	@chmod a+x $(EXECUTABLE)
-	@echo
 
-%.o:%.f90
-	@echo
-	@echo "****************************************"
-	@echo "Compiling     " $<
+%.o %.mod:%.f90
 	@$(F90) $(OPT) $(FPP) -c $(FFTW_INC) $(FGSL_INC) $< $(FFTW_LIB) $(FGSL_LIB) -lm
-	@echo "****************************************"
-	@echo
 
-#==================================================
-#
-#  General clean up
-#
 clean :
-	@echo
-	@echo "****************************************"
-	@echo
-	@echo "Removing object files"
-	@echo
-	@$(RM) $(SOURCES_OBJS)  $(OUTDIR)/$(EXECUTABLE) 
-	@echo
-	@echo "Removing included files"
-	@echo
-	@$(RM) *.inc  *.h  *.c *.F *.f *.f90 *.o  *.mod  *.cmn *_LINK*
-	@echo "****************************************"
-	@echo
+	@$(RM) $(SOURCES_OBJS) main 
+	@$(RM) *.inc  *.h  *.c *.F *.f *.f90 *.o  *.mod
