@@ -416,32 +416,64 @@ MODULE STATISTICS
         !> @param[in] NZ Number of nodes in z direction
         !> @param[out] OUT 3D array of auto-correlation coeffcients 
         !=============================================================================
-        SUBROUTINE CORREL3D(IN,NX,NY,NZ,OUT)
+        SUBROUTINE CORREL3D(IN,OUT)
             USE NRTYPE
             USE INIT
+            USE FGSL
             USE,INTRINSIC :: iso_c_binding
             IMPLICIT NONE
             include 'fftw3.f03'
             INTEGER(SP) :: nx,ny,nz
             INTEGER(SP) :: i,j,k
             TYPE(C_PTR) :: plan
-            REAL(DP) :: sigma
-            REAL(SP) :: N
-            REAL(DP),DIMENSION(nx,ny,nz) :: velo
+            REAL(fgsl_double) :: sigma
+            INTEGER(fgsl_size_t) :: dimen
+            REAL(SP) :: n
+            REAL(fgsl_double),DIMENSION(:),ALLOCATABLE :: velo
+            REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: temp
+            REAL(DP),DIMENSION(:,:,:),INTENT(IN) :: in
+            REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: out
             COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: workdata
-            COMPLEX(DPC),DIMENSION(:,:,:),INTENT(INOUT) :: in
-            COMPLEX(DPC),DIMENSION(:,:,:),INTENT(INOUT) :: out
-            VELO(:,:,:) = REAL(IN(:,:,:))
-            CALL DEVIATION(VELO,NX,NY,NZ,SIGMA)
-            ALLOCATE(WORKDATA(NX,NY,NZ))
-            plan = FFTW_PLAN_DFT_3D(NX,NY,NZ,IN,WORKDATA,FFTW_FORWARD,FFTW_ESTIMATE)
-            CALL FFTW_EXECUTE_DFT(PLAN,IN,WORKDATA)
-            N=NX*NY*NZ
-            OUT(:,:,:) = WORKDATA(:,:,:)*CONJG(WORKDATA(:,:,:))/SIGMA**2/N**2
-            CALL FFTW_DESTROY_PLAN(PLAN)
-            plan = FFTW_PLAN_DFT_3D(NX,NY,NZ,OUT,OUT,FFTW_BACKWARD,FFTW_ESTIMATE)
-            CALL FFTW_EXECUTE_DFT(PLAN,OUT,OUT)
-            DEALLOCATE(WORKDATA)
+            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: workdata1
+            REAL(fgsl_double) :: test(2) = (/1.0D0, 2.0D0/)
+            
+            nx = SIZE(in,1)
+            ny = SIZE(in,2)
+            nz = SIZE(in,3)
+            dimen = nx*ny*nz
+            ALLOCATE(velo(dimen))
+            ALLOCATE(workdata(nx,ny,nz))
+            ALLOCATE(workdata1(nx,ny,nz))
+            ALLOCATE(temp(nx,ny,nz))
+
+            !velo(:,:,:) = in(:,:,:)
+            velo = RESHAPE(in,(/nx*ny*nz/))
+            !CALL DEVIATION(VELO,NX,NY,NZ,SIGMA)
+            sigma = fgsl_stats_variance(velo,1_fgsl_size_t,dimen)
+            sigma = DSQRT(sigma)
+            !PRINT*,sigma
+            !dimen = 2
+            !sigma = fgsl_stats_mean(test,1_fgsl_size_t,dimen)
+            !PRINT*,sigma
+
+            temp(:,:,:) = in(:,:,:)
+            !!!An r2c transform produces the same output as a FFTW_FORWARD complex
+            !!!DFT of the same input
+
+            plan = FFTW_PLAN_DFT_R2C_3D(nx,ny,nz,temp,workdata,FFTW_ESTIMATE)
+            CALL FFTW_EXECUTE_DFT_R2C(plan,temp,workdata)
+            !compute autocorrelation on Fourier space
+            workdata1(:,:,:) = workdata(:,:,:)*CONJG(workdata(:,:,:))&
+                                 /sigma/sigma/dimen/dimen
+            CALL FFTW_DESTROY_PLAN(plan)
+            ! Perform backward transformation to get real valued correlation
+            plan = FFTW_PLAN_DFT_C2R_3D(nx,ny,nz,workdata1,out,FFTW_ESTIMATE)
+            CALL FFTW_EXECUTE_DFT_C2R(plan,workdata1,out)
+            DEALLOCATE(velo)
+            DEALLOCATE(workdata)
+            DEALLOCATE(workdata1)
+            DEALLOCATE(temp)
+            PRINT*,'DONE executing first transform'
         END SUBROUTINE CORREL3D
         !=============================================================================
         !> @author Felix Dietzsch

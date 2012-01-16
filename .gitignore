@@ -1,3 +1,6 @@
 INPUT
 *.swp
 main
+OUTPUT
+*.o
+*.mod

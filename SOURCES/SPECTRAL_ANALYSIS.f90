@@ -5,7 +5,7 @@ USE INIT
 USE ONERROR
 USE NRTYPE
 !USE NR,ONLY:CORRELATION,REALFT
-!USE STATISTICS
+USE STATISTICS
 USE IO_CLASS
 !USE FIELD_CLASS
 !USE TIMER_CLASS
@@ -60,6 +60,7 @@ REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: VVEL
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: WVEL
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: DIFCOF
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: VELO
+REAL(DP),DIMENSION(:,:,:),ALLOCATABLE ::autocor 
 REAL(SP),DIMENSION(:),ALLOCATABLE :: UUXY
 REAL(SP),DIMENSION(:),ALLOCATABLE :: WORKDATA1
 REAL(SP),DIMENSION(:),ALLOCATABLE :: CORR
@@ -89,22 +90,24 @@ CHARACTER(8) :: INDIR
 CHARACTER(8) :: ITERATION
 
 INTEGER  :: UNIT_VALUE
+integer(fgsl_size_t)::test
 
 ! FGSL TEST
 
 !real(fgsl_double) :: data(5) = (/17.2D0, 18.1D0, 16.5D0, 18.3D0, 12.6D0 /)
-!real(fgsl_double) :: meannn, variancen, largest, smallest
-!
-  !meannn     = fgsl_stats_mean(data, 1_fgsl_size_t, 5_fgsl_size_t)
-  !variancen = fgsl_stats_variance(data, 1_fgsl_size_t, 5_fgsl_size_t)
-  !largest  = fgsl_stats_max(data, 1_fgsl_size_t, 5_fgsl_size_t)
-  !smallest = fgsl_stats_min(data, 1_fgsl_size_t, 5_fgsl_size_t)
- ! 
-  !write(6, '(''The dataset is '',5(F9.5))') data
-  !write(6, '(''The sample mean is '',F9.5)') meannn
-  !write(6, '(''The estimated variance is '',F9.5)') variancen
-  !write(6, '(''The largest value is '',F9.5)') largest
-  !write(6, '(''The smallest value is '',F9.5)') smallest
+real(fgsl_double) :: data(1) = (/1.0D0/)
+real(fgsl_double) :: meannn, variancen, largest, smallest
+test=1
+  meannn     = fgsl_stats_mean(data, 1_fgsl_size_t,test) 
+  variancen = fgsl_stats_variance(data, 1_fgsl_size_t, 5_fgsl_size_t)
+  largest  = fgsl_stats_max(data, 1_fgsl_size_t, 5_fgsl_size_t)
+  smallest = fgsl_stats_min(data, 1_fgsl_size_t, 5_fgsl_size_t)
+  
+  write(6, '(''The dataset is '',5(F9.5))') data
+  write(6, '(''The sample mean is '',F9.5)') meannn
+  write(6, '(''The estimated variance is '',F9.5)') variancen
+  write(6, '(''The largest value is '',F9.5)') largest
+  write(6, '(''The smallest value is '',F9.5)') smallest
 
 
 !CALL MPI_INIT(IERR)
@@ -152,6 +155,7 @@ INTEGER  :: UNIT_VALUE
 
     ALLOCATE(TEMPER(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(UVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
+    ALLOCATE(velo(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(DIFCOF(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(PROG_VAR(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(SPEC(SPEC_NUM,DIMEN(1),DIMEN(2),DIMEN(3)))
@@ -161,10 +165,12 @@ INTEGER  :: UNIT_VALUE
     PRINT*,'   READINX X VEL'
     IF (DIM.EQ.1) THEN
         CALL READVALUE(INDIR//'SID_UVEL_'//ITERATION,UVEL)
+        VELO(:,:,:)=UVEL(:,:,:)
     ELSEIF (DIM.EQ.2) THEN
         PRINT*,'   READING V VEL'
         ALLOCATE(VVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
         CALL READVALUE(INDIR//'SID_VVEL_'//ITERATION,VVEL)
+        VELO(:,:,:) = DSQRT(UVEL(:,:,:)*UVEL(:,:,:)+VVEL(:,:,:)*VVEL(:,:,:))
     ELSEIF (DIM.EQ.3) THEN
         PRINT*,'   READING V VEL'
         ALLOCATE(VVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
@@ -172,6 +178,7 @@ INTEGER  :: UNIT_VALUE
         PRINT*,'   READING W VEL'
         ALLOCATE(WVEL(DIMEN(1),DIMEN(2),DIMEN(3)))
         CALL READVALUE(INDIR//'SID_WVEL_'//ITERATION,WVEL)
+        velo(:,:,:) = DSQRT(UVEL(:,:,:)*UVEL(:,:,:)+VVEL(:,:,:)*VVEL(:,:,:)+WVEL(:,:,:)*WVEL(:,:,:))
     END IF
 ! read diffusion coefficient data
     PRINT*,'READING DIFFUSION COEF. DATA...'
@@ -190,6 +197,7 @@ INTEGER  :: UNIT_VALUE
     !CALL WRITE_COORD('./OUTPUT/GRIDX',GRIDX)
     CALL WRITE_VALUE('./OUTPUT/TEMPER',TEMPER)
     CALL WRITE_VALUE('./OUTPUT/DIFCOF11',DIFCOF)
+    CALL WRITE_VALUE('./OUTPUT/VELO',velo)
     PRINT*,"SUCCESSFUL"
     PRINT*,"READING DIFFUSION COEFFICIENTS..."
 
@@ -247,24 +255,18 @@ INTEGER  :: UNIT_VALUE
     ALLOCATE(DUMMY1(NX,NY,NZ))
     ALLOCATE(DUMMY2(NX,NY,NZ))
     ALLOCATE(TEST_OUT(NX,NY,NZ))
-    DUMMY1(:,:,:)=DCMPLX(UUX(:,:,:),0.0)
+    DUMMY1(:,:,:)=DCMPLX(velo(:,:,:))
     DUMMY2(:,:,:)=DCMPLX(UUY(:,:,:),0.0)
     !#########################################
     !!########## AUTO CORRELATION ############
-    !CALL CORREL(DUMMY1,NX,NY,NZ,TEST_OUT)
+    PRINT*,"compute correlation"
+    ALLOCATE(autocor(dimen(1),dimen(2),dimen(3)))
+    CALL CORREL(velo,autocor)
     !!ALLOCATE(TEST_IN(NX,NY))
     !!TEST_IN(:,:)=TEST_OUT(:,:,1)
     !!CALL FFTSHIFT(TEST_IN,NX,NY) ! 2D shift of fourier transform
-    !!OPEN(1,FILE=OUTDIR//'CORRELATION.OUT')
-    !!DO I=1,NX
-        !!DO J=1,NY
-            !!!DO K=1,NZ
-                !!WRITE(1,*) REAL(TEST_IN(I,J))
-            !!!END DO
-        !!END DO
-    !!END DO
-    !!CLOSE(1)
-    !!!DEALLOCATE(TEST_IN)
+    CALL WRITE_VALUE('./OUTPUT/AUTOCOR',autocor)
+    !DEALLOCATE(TEST_IN)
     !!#########################################
     !########## CROSS CORRELATION ############
     DUMMY1(:,:,:)=DCMPLX(UUX(:,:,:),0.0)
@@ -299,22 +301,22 @@ INTEGER  :: UNIT_VALUE
 !if(procnum.ne.root) then
     !write(*,*) NX,NY,NZ
 !end if
-IF (DIM.GT.2) THEN
-    NX=NX-1
-    NY=NY-1
-    NZ=NZ-1
-    ALLOCATE(UUX_loc(NX,NY,NZ),STAT=IERR) 
-    IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-    ALLOCATE(UUY_loc(NX,NY,NZ),STAT=IERR) 
-    IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-    ALLOCATE(UUZ_loc(NX,NY,NZ),STAT=IERR) 
-    IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-ELSE
-    ALLOCATE(UUX_loc(NX,NY,NZ),STAT=IERR) 
-    IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-    ALLOCATE(UUY_loc(NX,NY,NZ),STAT=IERR) 
-    IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-END IF
+!IF (DIM.GT.2) THEN
+    !NX=NX-1
+    !NY=NY-1
+    !NZ=NZ-1
+    !ALLOCATE(UUX_loc(NX,NY,NZ),STAT=IERR) 
+    !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
+    !ALLOCATE(UUY_loc(NX,NY,NZ),STAT=IERR) 
+    !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
+    !ALLOCATE(UUZ_loc(NX,NY,NZ),STAT=IERR) 
+    !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
+!ELSE
+    !ALLOCATE(UUX_loc(NX,NY,NZ),STAT=IERR) 
+    !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
+    !ALLOCATE(UUY_loc(NX,NY,NZ),STAT=IERR) 
+    !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
+!END IF
 !!!!IF (PROCNUM.EQ.ROOT) THEN
 !!!!    CALL t%start_timer()
 !!!!    if(procnum.eq.root) then
