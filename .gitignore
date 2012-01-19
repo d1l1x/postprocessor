@@ -4,3 +4,4 @@ main
 OUTPUT
 *.o
 *.mod
+.DS_Store
