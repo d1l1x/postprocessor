@@ -1,13 +1,10 @@
 MODULE TIMER_CLASS
 USE NRTYPE
 IMPLICIT NONE
-! Declare constants
-INTEGER,PARAMETER :: DBL=SELECTED_REAL_KIND(p=DP)
-
 ! Type definition
 TYPE,PUBLIC :: TIMER ! This will be the name we instantiate
     PRIVATE
-	REAL(DBL) :: saved_time
+    REAL(DP) :: saved_time
     CONTAINS
     PROCEDURE,PUBLIC :: START_TIMER => start_timer_sub
     PROCEDURE,PUBLIC :: ELAPSED_TIME => elapsed_time_fn
@@ -24,11 +21,11 @@ CONTAINS
     this%saved_time = 86400.D0 * value(3) + 3600.D0 * value(5) + 60.D0 * value(6) + value(7) + 0.001D0 * value(8)
     END SUBROUTINE start_timer_sub
     !
-    REAL FUNCTION elapsed_time_fn(this)
+    REAL(DP) FUNCTION elapsed_time_fn(this)
     IMPLICIT NONE
     CLASS(timer) :: this
     INTEGER,DIMENSION(8) :: value
-	REAL(DBL) :: current_time
+    REAL(DP) :: current_time
     CALL date_and_time(VALUES=value)
     current_time = 86400.D0 * value(3) + 3600.D0 * value(5) + 60.D0 * value(6) + value(7) + 0.001D0 * value(8)
     ! Get elapsed time

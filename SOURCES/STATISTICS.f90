@@ -68,7 +68,7 @@ MODULE STATISTICS
             IMPLICIT NONE
             include 'fftw3.f03'
             INTEGER(SP) :: NX,NY
-            INTEGER(SP) :: I,J,K,KAPPA_POS
+            INTEGER(SP) :: I,J,KAPPA_POS
             REAL(DP) :: KAPPA,II,JJ,SCALING
             !INTEGER(SP) :: FFTW_DIRECTION !< Direction of the Fourier transform. Can be found in the  fftw3.f file, located in the include directory
             !INTEGER(SP) :: FFTW_ESTIMATE !< Perform FFT without any precomputation for an optimal algorithm. Can be found in the  fftw3.f file, located in the include directory
@@ -109,7 +109,7 @@ MODULE STATISTICS
                     IF (KAPPA_POS.LE.SIZE(OUT)-1) THEN
                         !KAPPA = .5 *((REAL(PHI_X(I,J))**2 + AIMAG(PHI_X(I,J))**2) &
                                     !+(REAL(PHI_Y(I,J))**2 + AIMAG(PHI_Y(I,J))**2))
-                        KAPPA = .5 *((PHI_X(I,J)+PHI_Y(I,J)))
+                        KAPPA = .5 *REAL(((PHI_X(I,J)+PHI_Y(I,J))))
                         OUT(KAPPA_POS) = OUT(KAPPA_POS) + 2.D0*KAPPA
                     END IF
                 END DO
@@ -156,31 +156,28 @@ MODULE STATISTICS
         !>  eMail from Michael Gauding from July 12th 2011\n
         !>  concerns the integration of spherical shells
         !=============================================================================
-        SUBROUTINE SPEC3D(PROCNUM,IN1,IN2,IN3,NX,NY,NZ,OUT)
+        SUBROUTINE SPEC3D(PROCNUM,NX,NY,NZ,OUT)
             USE NRTYPE
             USE INIT
             USE,INTRINSIC :: iso_c_binding
             IMPLICIT NONE
             !include "mpif.h"
             include "fftw3.f03"
-            INTEGER(SP) :: NX,NY,NZ,N
+            INTEGER(SP) :: NX,NY,NZ
             INTEGER(SP) :: PROCNUM
-            INTEGER(SP) :: I,J,K,KAPPA_POS
-            REAL(DP) :: KAPPA,II,JJ,KK,SCALING
-            INTEGER(SP) :: FFTW_DIRECTION!,FFTW_ESTIMATE
             !TYPE(C_PTR) :: PLAN
             COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: WORKDATA1,WORKDATA2,WORKDATA3
-            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: PHI_X,PHI_Y,PHI_Z
+            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: PHI_X
             COMPLEX(DPC),DIMENSION(:),INTENT(INOUT) :: OUT
-            REAL(DP),DIMENSION(:,:,:) :: IN1,IN2,IN3
+            !REAL(DP),DIMENSION(:,:,:) :: IN1,IN2,IN3
             !COMPLEX(DPC),DIMENSION(NX,NY,NZ) :: TEMP1,TEMP2,TEMP3
             !
-            integer(C_INTPTR_T) :: alloc_local,local_n0,local_0_start
+            !integer(C_INTPTR_T) :: alloc_local
             integer(C_INTPTR_T) :: nnx
             integer(C_INTPTR_T) :: nny
             integer(C_INTPTR_T) :: nnz
-            complex(C_DOUBLE),pointer :: data(:,:,:)
-            type(C_PTR) :: plan,cdata
+            !complex(C_DOUBLE),pointer :: data(:,:,:)
+            !type(C_PTR) :: plan,cdata
             !
             IF (PROCNUM.EQ.0) THEN
                 WRITE(*,*) 'Initialize FFTW_MPI ...'
@@ -424,18 +421,15 @@ MODULE STATISTICS
             IMPLICIT NONE
             include 'fftw3.f03'
             INTEGER(SP) :: nx,ny,nz
-            INTEGER(SP) :: i,j,k
             TYPE(C_PTR) :: plan
             REAL(fgsl_double) :: sigma
             INTEGER(fgsl_size_t) :: dimen
-            REAL(SP) :: n
             REAL(fgsl_double),DIMENSION(:),ALLOCATABLE :: velo
             REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: temp
             REAL(DP),DIMENSION(:,:,:),INTENT(IN) :: in
             REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: out
             COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: workdata
             COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: workdata1
-            REAL(fgsl_double) :: test(2) = (/1.0D0, 2.0D0/)
             
             nx = SIZE(in,1)
             ny = SIZE(in,2)
@@ -519,8 +513,6 @@ MODULE STATISTICS
             IMPLICIT NONE
             include 'fftw3.f03'
             INTEGER(SP) :: NX,NY,NZ
-            INTEGER(SP) :: DIREC
-            INTEGER(SP) :: I,J,K
             !INTEGER(SP) :: FFTW_DIRECTION,FFTW_ESTIMATE
             TYPE(C_PTR) :: PLAN
             REAL(DP) :: SIGMAX,SIGMAY
@@ -555,10 +547,8 @@ MODULE STATISTICS
             DEALLOCATE(WORKDATA1)
             DEALLOCATE(WORKDATA2)
         END SUBROUTINE XCORREL
-        SUBROUTINE MEAN1D(M,NX)
+        SUBROUTINE MEAN1D()
             USE NRTYPE
-            INTEGER(SP) :: NX
-            REAL(DP),DIMENSION(:) :: M
             CONTINUE
         END SUBROUTINE MEAN1D
         !=============================================================================
@@ -578,21 +568,19 @@ MODULE STATISTICS
         !=============================================================================
         SUBROUTINE MEAN3D(M,NX,NY,NZ,MEAN)
             USE NRTYPE
-            INTEGER(SP) :: NX,NY,I,J,K,L
+            INTEGER(SP) :: NX,NY
             REAL(DP) :: MEAN
             REAL(DP),DIMENSION(:,:,:) :: M
             MEAN = 0.0
             MEAN = SUM(M)
             MEAN = MEAN/(NX*NY*NZ)
         END SUBROUTINE MEAN3D
-        SUBROUTINE MEAN4D(M,NX,NY,NZ,DIMEN,MEAN)
+        SUBROUTINE MEAN4D(M,NX,NY,NZ,MEAN)
             USE NRTYPE
             USE INIT
-            INTEGER(SP) :: NX,NY,I,J,K,N,DIMEN
+            INTEGER(SP) :: NX,NY
             REAL(DP) :: MEAN
             REAL(DP),DIMENSION(:,:,:,:) :: M
-            REAL(DP),DIMENSION(NX*NY*NZ) :: M_r
-            REAL(DP),DIMENSION(NX,NY,NZ) :: U
             MEAN = 0.0
             MEAN=SUM(M)
             MEAN = MEAN/(DIM*NX*NY*NZ)

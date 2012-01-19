@@ -21,7 +21,7 @@ SOURCES_OBJS=$(addsuffix .o,$(SOURCES))
 #
 vpath %.f90 $(SOURCEDIR)
 .PHONY: main clean
-#.INTERMEDIATE: $(SOURCES_OBJS) $(addsuffix .mod,$(SOURCES))
+.INTERMEDIATE: $(SOURCES_OBJS) $(addsuffix .mod,$(SOURCES))
 #
 main : $(SOURCES_OBJS) 
 	$(F90) $(OPT) $(FPP) $(FGSL_INC) $(FFTW_INC) -o $@ $(SOURCES_OBJS) $(FFTW_LIB) $(FGSL_LIB) -lm

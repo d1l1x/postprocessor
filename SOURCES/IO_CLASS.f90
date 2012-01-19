@@ -139,142 +139,126 @@ USE NRTYPE
         END SUBROUTINE READVEL_BIN
     END INTERFACE READVEL_BIN
     !###################################################
-    TYPE,PUBLIC :: IO
-        PRIVATE
-        INTEGER(SP) :: NOLINES
-        INTEGER(SP) :: NONODES
-        INTEGER(SP) :: NONX
-        INTEGER(SP) :: NONY
-        INTEGER(SP) :: NONZ
-        INTEGER(SP) :: DIM
-        REAL(DP),DIMENSION(:,:),POINTER :: dummy
-        CONTAINS
-        PROCEDURE,PUBLIC :: file_stats => read_file_sub
-        PROCEDURE,PUBLIC :: NOL => number_of_lines_f
-        PROCEDURE,PUBLIC :: NON => number_of_nodes_f
-        PROCEDURE,PUBLIC :: NX => number_of_nodes_x_f
-        PROCEDURE,PUBLIC :: NY => number_of_nodes_y_f
-        PROCEDURE,PUBLIC :: NZ => number_of_nodes_z_f
-        PROCEDURE,PUBLIC :: read_file => read_dummy_sub
-        PROCEDURE,PUBLIC :: field => field_f
-    END TYPE IO
-    PRIVATE :: read_file_sub,number_of_nodes_f,number_of_lines_f
+    !!!TYPE,PUBLIC :: IO
+    !!!    PRIVATE
+    !!!    INTEGER(SP) :: NOLINES
+    !!!    INTEGER(SP) :: NONODES
+    !!!    INTEGER(SP) :: NONX
+    !!!    INTEGER(SP) :: NONY
+    !!!    INTEGER(SP) :: NONZ
+    !!!    INTEGER(SP) :: DIM
+    !!!    REAL(DP),DIMENSION(:,:),POINTER :: dummy
+    !!!    CONTAINS
+    !!!    PROCEDURE,PUBLIC :: file_stats => read_file_sub
+    !!!    PROCEDURE,PUBLIC :: NOL => number_of_lines_f
+    !!!    PROCEDURE,PUBLIC :: NON => number_of_nodes_f
+    !!!    PROCEDURE,PUBLIC :: NX => number_of_nodes_x_f
+    !!!    PROCEDURE,PUBLIC :: NY => number_of_nodes_y_f
+    !!!    PROCEDURE,PUBLIC :: NZ => number_of_nodes_z_f
+    !!!    PROCEDURE,PUBLIC :: read_file => read_dummy_sub
+    !!!    PROCEDURE,PUBLIC :: field => field_f
+    !!!END TYPE IO
+    !PRIVATE :: read_file_sub,number_of_nodes_f,number_of_lines_f
     !
-    CONTAINS
-        SUBROUTINE read_dummy_sub(this,filename,dimen)
-        USE INIT
-        USE NRTYPE
-        USE ONERROR
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        CHARACTER(LEN=*), INTENT(IN) :: filename
-        INTEGER(SP) :: STATUS_READ
-        INTEGER(SP) :: N
-        INTEGER(SP) :: dimen
-        REAL(DP),DIMENSION(3),TARGET :: DUM1
-        REAL(DP),DIMENSION(:,:),ALLOCATABLE,TARGET :: DUM
-        TYPE :: ptr
-            REAL(DP),DIMENSION(:),POINTER :: p
-        END TYPE ptr
-        TYPE(ptr) :: p1
-        STATUS_READ = 0
-        ! First loop to get number of lines
-        OPEN(1,FILE=filename,STATUS='UNKNOWN',FORM='FORMATTED')
-        DO
-            READ(1,*,IOSTAT=STATUS_READ)
-            IF(STATUS_READ.NE.0) EXIT
-            this%NOLINES = this%NOLINES + 1
-        END DO
-        this%NONODES = this%NOLINES
-        !WRITE(*,*) this%NONODES
-        this%NONX = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        this%NONY = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        this%NONZ = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        this%DIM = dimen
-        IF (dimen.EQ.3)ALLOCATE(this%dummy(this%NOLINES,3))
-        IF (dimen.EQ.2)ALLOCATE(this%dummy(this%NOLINES,2))
-        !IF (dimen.EQ.3)ALLOCATE(p1(this%NOLINES))
-        !IF (dimen.EQ.2)ALLOCATE(p1(this%NOLINES))
-        !IF (ASSOCIATED(this%dummy)) THEN
-            IF (dimen.EQ.3) THEN
-                REWIND(1)
-                DO N=1,this%NONODES-1
-                    !ALLOCATE(p1(dimen,N))
-                    READ(1,*,IOSTAT=STATUS_READ) DUM1(1),DUM1(2),DUM1(3)
-                    p1%p => DUM1
-                    this%dummy(N,:) = p1%p(:)
-                END DO
-            ELSE 
-                DO N=1,this%NONODES-1
-                    READ(1,*,IOSTAT=STATUS_READ) this%dummy(1,N),this%dummy(2,N)
-                END DO
-            END IF
-        !END IF
-        IF (dimen.EQ.3)ALLOCATE(this%dummy(3,this%NOLINES))
-        IF (dimen.EQ.2)ALLOCATE(this%dummy(2,this%NOLINES))
-        this%dummy => DUM
-        CLOSE(1)
-        END SUBROUTINE read_dummy_sub
-        !
-        SUBROUTINE read_file_sub(this,filename,dimen)
-        USE NRTYPE
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        CHARACTER(LEN=*),INTENT(IN) :: filename
-        INTEGER(SP) :: IERR,STATUS_READ
-        INTEGER(SP) :: dimen
-        !WRITE(*,*) 'Reading file', filename
-        !OPEN(1,FILE=filename,STATUS='UNKNOWN',FORM='FORMATTED')
-        !DO
-            !READ(1,*,IOSTAT=STATUS_READ)
-            !IF(STATUS_READ.NE.0) EXIT
-            !this%NOLINES = this%NOLINES + 1
-        !END DO
-        !CLOSE(1)
-        !this%NONODES = this%NOLINES
-        !this%NONX = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        !this%NONY = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        !this%NONZ = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        !this%DIM = dimen
-        END SUBROUTINE read_file_sub
-        !
-        FUNCTION field_f(this) RESULT (array)
-        USE NRTYPE
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        REAL(DP),DIMENSION(:,:),POINTER :: array
-        array => this%dummy
-        END FUNCTION field_f
-        !
-        REAL FUNCTION number_of_lines_f(this)
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        number_of_lines_f = this%NOLINES
-        END FUNCTION number_of_lines_f
-        !
-        REAL FUNCTION number_of_nodes_f(this)
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        number_of_nodes_f = this%NONODES
-        END FUNCTION number_of_nodes_f
-        !
-        REAL FUNCTION number_of_nodes_x_f(this)
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        number_of_nodes_x_f =  this%NONX
-        END FUNCTION number_of_nodes_x_f
-        !
-        REAL FUNCTION number_of_nodes_y_f(this)
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        number_of_nodes_y_f =  this%NONY
-        END FUNCTION number_of_nodes_y_f
-        !
-        REAL FUNCTION number_of_nodes_z_f(this)
-        IMPLICIT NONE
-        CLASS(IO) :: this
-        number_of_nodes_z_f =  this%NONZ
-        END FUNCTION number_of_nodes_z_f
+    !CONTAINS
+        !!!SUBROUTINE read_dummy_sub(this,filename,dimen)
+        !!!USE INIT
+        !!!USE NRTYPE
+        !!!USE ONERROR
+        !!!IMPLICIT NONE
+        !!!CLASS(IO) :: this
+        !!!CHARACTER(LEN=*), INTENT(IN) :: filename
+        !!!INTEGER(SP) :: STATUS_READ
+        !!!INTEGER(SP) :: N
+        !!!INTEGER(SP) :: dimen
+        !!!REAL(DP),DIMENSION(3),TARGET :: DUM1
+        !!!REAL(DP),DIMENSION(:,:),ALLOCATABLE,TARGET :: DUM
+        !!!TYPE :: ptr
+        !!!    REAL(DP),DIMENSION(:),POINTER :: p
+        !!!END TYPE ptr
+        !!!TYPE(ptr) :: p1
+        !!!STATUS_READ = 0
+        !!!! First loop to get number of lines
+        !!!OPEN(1,FILE=filename,STATUS='UNKNOWN',FORM='FORMATTED')
+        !!!DO
+        !!!    READ(1,*,IOSTAT=STATUS_READ)
+        !!!    IF(STATUS_READ.NE.0) EXIT
+        !!!    this%NOLINES = this%NOLINES + 1
+        !!!END DO
+        !!!this%NONODES = this%NOLINES
+        !!!!WRITE(*,*) this%NONODES
+        !!!this%NONX = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
+        !!!this%NONY = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
+        !!!this%NONZ = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
+        !!!this%DIM = dimen
+        !!!IF (dimen.EQ.3)ALLOCATE(this%dummy(this%NOLINES,3))
+        !!!IF (dimen.EQ.2)ALLOCATE(this%dummy(this%NOLINES,2))
+        !!!!IF (dimen.EQ.3)ALLOCATE(p1(this%NOLINES))
+        !!!!IF (dimen.EQ.2)ALLOCATE(p1(this%NOLINES))
+        !!!!IF (ASSOCIATED(this%dummy)) THEN
+        !!!    IF (dimen.EQ.3) THEN
+        !!!        REWIND(1)
+        !!!        DO N=1,this%NONODES-1
+        !!!            !ALLOCATE(p1(dimen,N))
+        !!!            READ(1,*,IOSTAT=STATUS_READ) DUM1(1),DUM1(2),DUM1(3)
+        !!!            p1%p => DUM1
+        !!!            this%dummy(N,:) = p1%p(:)
+        !!!        END DO
+        !!!    ELSE 
+        !!!        DO N=1,this%NONODES-1
+        !!!            READ(1,*,IOSTAT=STATUS_READ) this%dummy(1,N),this%dummy(2,N)
+        !!!        END DO
+        !!!    END IF
+        !!!!END IF
+        !!!IF (dimen.EQ.3)ALLOCATE(this%dummy(3,this%NOLINES))
+        !!!IF (dimen.EQ.2)ALLOCATE(this%dummy(2,this%NOLINES))
+        !!!this%dummy => DUM
+        !!!CLOSE(1)
+        !!!END SUBROUTINE read_dummy_sub
+        !!!!
+        !!!SUBROUTINE read_file_sub()
+        !!!USE NRTYPE
+        !!!IMPLICIT NONE
+        !!!CONTINUE
+        !!!END SUBROUTINE read_file_sub
+        !!!!
+        !!!FUNCTION field_f(this) RESULT (array)
+        !!!USE NRTYPE
+        !!!IMPLICIT NONE
+        !!!CLASS(IO) :: this
+        !!!REAL(DP),DIMENSION(:,:),POINTER :: array
+        !!!array => this%dummy
+        !!!END FUNCTION field_f
+        !!!!
+        !!!REAL FUNCTION number_of_lines_f(this)
+        !!!IMPLICIT NONE
+        !!!CLASS(IO) :: this
+        !!!number_of_lines_f = this%NOLINES
+        !!!END FUNCTION number_of_lines_f
+        !!!!
+        !!!REAL FUNCTION number_of_nodes_f(this)
+        !!!IMPLICIT NONE
+        !!!CLASS(IO) :: this
+        !!!number_of_nodes_f = this%NONODES
+        !!!END FUNCTION number_of_nodes_f
+        !!!!
+        !!!REAL FUNCTION number_of_nodes_x_f(this)
+        !!!IMPLICIT NONE
+        !!!CLASS(IO) :: this
+        !!!number_of_nodes_x_f =  this%NONX
+        !!!END FUNCTION number_of_nodes_x_f
+        !!!!
+        !!!REAL FUNCTION number_of_nodes_y_f(this)
+        !!!IMPLICIT NONE
+        !!!CLASS(IO) :: this
+        !!!number_of_nodes_y_f =  this%NONY
+        !!!END FUNCTION number_of_nodes_y_f
+        !!!!
+        !!!REAL FUNCTION number_of_nodes_z_f(this)
+        !!!IMPLICIT NONE
+        !!!CLASS(IO) :: this
+        !!!number_of_nodes_z_f =  this%NONZ
+        !!!END FUNCTION number_of_nodes_z_f
         !!
 END MODULE IO_CLASS
 !=============================================================================
@@ -297,7 +281,7 @@ SUBROUTINE READCOORD2D(FILENAME,COORD)
    USE ONERROR
    CHARACTER(LEN=*), INTENT(IN) :: FILENAME
    INTEGER(SP) :: NUMBER_OF_NODES
-   INTEGER(SP) :: IERR,STATUS_READ
+   INTEGER(SP) :: STATUS_READ
    REAL(DP),DIMENSION(:,:),INTENT(INOUT) :: COORD
    OPEN(1,FILE=FILENAME,FORM='FORMATTED')
    NUMBER_OF_NODES = SIZE(COORD,2)!NUMBER_OF_LINES
@@ -333,7 +317,6 @@ SUBROUTINE READ_DIM(FILEX,FILEY,FILEZ,DIMEN)
   CHARACTER(LEN=*),INTENT(IN) :: FILEZ
   LOGICAL :: FILE_EXISTS
   INTEGER(SP) :: NPX,NPY,NPZ
-  INTEGER(SP) :: I
 
   NPY=1
   NPZ=1
@@ -526,52 +509,51 @@ END SUBROUTINE WRITE_VALUE
 !> @param[out] NY Number of nodes in y direction 
 !> @param[out] NZ Number of nodes in z direction 
 !=============================================================================
-SUBROUTINE INDEXING(COORD,NUMBER_OF_NODES,INDX,NX,INDY,NY,INDZ,NZ)
-    USE NRTYPE
-    USE INIT
-    REAL(DP) :: XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,LX,LY,LZ
-    INTEGER(SP) :: NUMBER_OF_NODES
-    INTEGER(SP),INTENT(INOUT) :: NX,NY
-    INTEGER(SP),INTENT(INOUT),OPTIONAL :: NZ
-    INTEGER(SP) :: IERR
-    INTEGER(SP) :: N
-    INTEGER(SP) :: NXM,NYM,NZM
-    INTEGER(SP),DIMENSION(:),INTENT(INOUT) :: INDX,INDY
-    INTEGER(SP),DIMENSION(:),INTENT(INOUT),OPTIONAL :: INDZ
-    REAL(DP),DIMENSION(:,:) :: COORD
-    IF (PRESENT(INDZ).AND.PRESENT(NZ)) THEN
-        NX = REAL(NUMBER_OF_NODES+1)**(1/3.D0)
-    ELSE
-        NX = REAL(NUMBER_OF_NODES+1)**(1/2.D0)
-    END IF
-    NY = NX
-    NXM = NX -1 ! number of cell in one direction
-    NYM = NY -1
-    XMIN = MINVAL(COORD(1,:),1)
-    XMAX = MAXVAL(COORD(1,:),1)
-    YMIN = MINVAL(COORD(2,:),1)
-    YMAX = MAXVAL(COORD(2,:),1)
-    LX = XMAX-XMIN
-    LY = YMAX-YMIN
-    IF (PRESENT(INDZ).AND.PRESENT(NZ)) THEN
-        NZ = NX
-        NZM = NZ - 1
-        ZMIN = MINVAL(COORD(3,:),1)
-        ZMAX = MAXVAL(COORD(3,:),1)
-        LZ = ZMAX-ZMIN
-    END IF
-    WRITE(*,*) 'Number of cells in on direction', NXM
-    DO N=1,NUMBER_OF_NODES-1
-       X = COORD(1,N)
-       INDX(N) = IDINT(NXM*(X-XMIN)/LX+0.5D0)+1
-       Y = COORD(2,N)
-       INDY(N) = IDINT(NYM*(Y-YMIN)/LY+0.5D0)+1
-       IF (PRESENT(INDZ).AND.PRESENT(NZ)) THEN
-           Z = COORD(3,N)
-           INDZ(N) = IDINT(NZM*(Z-ZMIN)/LZ+0.5D0)+1
-       END IF
-    END DO
-END SUBROUTINE INDEXING
+!!!SUBROUTINE INDEXING(COORD,NUMBER_OF_NODES,INDX,NX,INDY,NY,INDZ,NZ)
+!!!    USE NRTYPE
+!!!    USE INIT
+!!!    REAL(DP) :: XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,LX,LY,LZ
+!!!    INTEGER(SP) :: NUMBER_OF_NODES
+!!!    INTEGER(SP),INTENT(INOUT) :: NX,NY
+!!!    INTEGER(SP),INTENT(INOUT),OPTIONAL :: NZ
+!!!    INTEGER(SP) :: N
+!!!    INTEGER(SP) :: NXM,NYM,NZM
+!!!    INTEGER(SP),DIMENSION(:),INTENT(INOUT) :: INDX,INDY
+!!!    INTEGER(SP),DIMENSION(:),INTENT(INOUT),OPTIONAL :: INDZ
+!!!    REAL(DP),DIMENSION(:,:) :: COORD
+!!!    IF (PRESENT(INDZ).AND.PRESENT(NZ)) THEN
+!!!        NX = REAL(NUMBER_OF_NODES+1)**(1/3.D0)
+!!!    ELSE
+!!!        NX = REAL(NUMBER_OF_NODES+1)**(1/2.D0)
+!!!    END IF
+!!!    NY = NX
+!!!    NXM = NX -1 ! number of cell in one direction
+!!!    NYM = NY -1
+!!!    XMIN = MINVAL(COORD(1,:),1)
+!!!    XMAX = MAXVAL(COORD(1,:),1)
+!!!    YMIN = MINVAL(COORD(2,:),1)
+!!!    YMAX = MAXVAL(COORD(2,:),1)
+!!!    LX = XMAX-XMIN
+!!!    LY = YMAX-YMIN
+!!!    IF (PRESENT(INDZ).AND.PRESENT(NZ)) THEN
+!!!        NZ = NX
+!!!        NZM = NZ - 1
+!!!        ZMIN = MINVAL(COORD(3,:),1)
+!!!        ZMAX = MAXVAL(COORD(3,:),1)
+!!!        LZ = ZMAX-ZMIN
+!!!    END IF
+!!!    WRITE(*,*) 'Number of cells in on direction', NXM
+!!!    DO N=1,NUMBER_OF_NODES-1
+!!!       X = COORD(1,N)
+!!!       INDX(N) = IDINT(NXM*(X-XMIN)/LX+0.5D0)+1
+!!!       Y = COORD(2,N)
+!!!       INDY(N) = IDINT(NYM*(Y-YMIN)/LY+0.5D0)+1
+!!!       IF (PRESENT(INDZ).AND.PRESENT(NZ)) THEN
+!!!           Z = COORD(3,N)
+!!!           INDZ(N) = IDINT(NZM*(Z-ZMIN)/LZ+0.5D0)+1
+!!!       END IF
+!!!    END DO
+!!!END SUBROUTINE INDEXING
 !=============================================================================
 !> @author Felix Dietzsch
 !
@@ -599,8 +581,7 @@ SUBROUTINE READVEL(FILENAME,UUX,UUY,UUZ)
     IMPLICIT NONE
     CHARACTER(LEN=*), INTENT(IN) :: FILENAME
     INTEGER(SP) :: NP
-    INTEGER(SP) :: IERR
-    INTEGER(SP) :: II,JJ,KK,N
+    INTEGER(SP) :: N 
     REAL(DP) :: UX,UY,UZ
     !INTEGER(SP),DIMENSION(:) :: INDX,INDY
     !INTEGER(SP),DIMENSION(:),OPTIONAL :: INDZ
