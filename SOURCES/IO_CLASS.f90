@@ -77,6 +77,16 @@ USE NRTYPE
          CHARACTER(LEN=*), INTENT(IN) :: FILENAME
       END SUBROUTINE READVALUE 
     END INTERFACE READVALUE
+    INTERFACE READVALUE3D
+        SUBROUTINE READVALUE3D(FILENAME,VAR)
+           USE NRTYPE
+           USE ONERROR
+           INTEGER :: I,J,K
+           INTEGER :: NPROC_Z,NPOINTS_Z,TEMPZ_OLD
+           REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: VAR
+           CHARACTER(LEN=*), INTENT(IN) :: FILENAME
+           END SUBROUTINE READVALUE3D
+    END INTERFACE READVALUE3D
     INTERFACE WRITE_VALUE
       SUBROUTINE WRITE_VALUE(FILENAME,value)
         USE NRTYPE
@@ -436,6 +446,42 @@ SUBROUTINE READVALUE(FILENAME,VAR)
                          K=1,SIZE(VAR,3))
    CLOSE(1)
 END SUBROUTINE READVALUE
+!=============================================================================
+!> @author Felix Dietzsch
+!
+! DESCRIPTION:
+!> Reads temperature data provided by file 'FILENAME'.
+!> Returns array 'VAR'
+!
+! REVISION HISTORY:
+! 05 12 2011 Initial Version
+!
+!> @param[in] FILENAME Specifies the name of the file containing the data to be read.
+!> @param[out] VAR Array containing node temperatures
+!=============================================================================
+SUBROUTINE READVALUE3D(FILENAME,VAR)
+   !USE INIT
+   USE NRTYPE
+   USE ONERROR
+   INTEGER :: I,J,K
+   INTEGER :: NPROC_Z,NPOINTS_Z,TEMPZ_OLD
+   REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: VAR
+   CHARACTER(LEN=*), INTENT(IN) :: FILENAME
+   !
+   PRINT*,shape(var)
+   OPEN(1,FILE=FILENAME,FORM="UNFORMATTED",ACTION="read")
+   REWIND(1)
+   READ(1) NPROC_Z
+   TEMPZ_OLD = 0
+   DO L=1,NPROC_Z
+       READ(1) NPOINTS_Z
+       READ(1) (((VAR(I,J,K),I=1,SIZE(VAR,1)),J=1,SIZE(VAR,2)),&
+       K=TEMPZ_OLD+1,TEMPZ_OLD+NPOINTS_Z)
+       TEMPZ_OLD = TEMPZ_OLD + NPOINTS_Z
+       PRINT*,VAR(I,J,K)
+   ENDDO
+   CLOSE(1)
+END SUBROUTINE READVALUE3D
 !=============================================================================
 !> @author Felix Dietzsch
 !

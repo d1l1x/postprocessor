@@ -16,6 +16,7 @@ include "fftw3.f03"
 INTEGER :: I 
 
 INTEGER(SP) :: SPEC_NUM
+REAL(SP) :: int_temp
 INTEGER(SP),DIMENSION(3) :: DIMEN
 CHARACTER(2) :: ITERATOR
 REAL(DP),DIMENSION(:),ALLOCATABLE :: GRIDX,GRIDY,GRIDZ 
@@ -27,7 +28,12 @@ REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: VVEL
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: WVEL
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: DIFCOF
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: VELO
+REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: temp
 REAL(DP),DIMENSION(:,:,:),ALLOCATABLE ::autocor 
+REAL(DP),DIMENSION(:,:,:),ALLOCATABLE ::temp_3d
+REAL(DP),DIMENSION(:),ALLOCATABLE ::temp_1d
+REAL(DP),DIMENSION(:),ALLOCATABLE ::c_limit_array
+LOGICAL,DIMENSION(:,:,:),ALLOCATABLE ::c_limit_index
 CHARACTER(9) :: OUTDIR
 CHARACTER(8) :: INDIR
 CHARACTER(8) :: ITERATION
@@ -99,12 +105,13 @@ test=1
     ALLOCATE(DIFCOF(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(PROG_VAR(DIMEN(1),DIMEN(2),DIMEN(3)))
     ALLOCATE(SPEC(SPEC_NUM,DIMEN(1),DIMEN(2),DIMEN(3)))
+    ALLOCATE(c_limit_index(DIMEN(1),DIMEN(2),DIMEN(3)))
     PRINT*,'READING TEMPERATUR...'
     CALL READVALUE(INDIR//'SID_TEMPER_'//ITERATION,TEMPER)
     PRINT*,'READING VELOCITIES...'
     PRINT*,'   READINX X VEL'
+    CALL READVALUE(INDIR//'SID_UVEL_'//ITERATION,UVEL)
     IF (DIM.EQ.1) THEN
-        CALL READVALUE(INDIR//'SID_UVEL_'//ITERATION,UVEL)
         VELO(:,:,:)=UVEL(:,:,:)
     ELSEIF (DIM.EQ.2) THEN
         PRINT*,'   READING V VEL'
@@ -120,6 +127,15 @@ test=1
         CALL READVALUE(INDIR//'SID_WVEL_'//ITERATION,WVEL)
         velo(:,:,:) = DSQRT(UVEL(:,:,:)*UVEL(:,:,:)+VVEL(:,:,:)*VVEL(:,:,:)+WVEL(:,:,:)*WVEL(:,:,:))
     END IF
+    ALLOCATE(temp_3d(101,101,101))
+    ALLOCATE(temp_1d(101*101*101))
+    CALL READVALUE3D(indir//'test/SID_UVEL_00000000',temp_3d)
+    temp_1d = reshape(temp_3d,(/101*101*101/))
+    test = 101*101*101
+    meannn= fgsl_stats_mean(temp_1d, 1_fgsl_size_t,test) 
+    PRINT*,"MEAN", meannn
+    CALL WRITE_VALUE('./OUTPUT/test',temp_3d)
+
 ! read diffusion coefficient data
     PRINT*,'READING DIFFUSION COEF. DATA...'
     CALL READVALUE(INDIR//'SID_D11_'//ITERATION,DIFCOF)
@@ -131,7 +147,12 @@ test=1
         CALL READVALUE(INDIR//'SID_Y'//TRIM(ITERATOR)//'_'//ITERATION,SPEC(I,:,:,:))
     END DO
     ! compute c with Y
-    CALL COMP_PROGRESS(TEMPER,PROG_VAR,.TRUE.,SPEC(11,:,:,:),MINVAL(SPEC(11,:,:,:)),MAXVAL(SPEC(11,:,:,:)))
+    int_temp = 0.1
+    CALL COMP_PROGRESS(TEMPER,PROG_VAR,.TRUE.,SPEC(11,:,:,:),MINVAL(SPEC(11,:,:,:)),MAXVAL(SPEC(11,:,:,:)),int_temp,c_limit_index)
+
+    ALLOCATE(c_limit_array(COUNT(c_limit_index.EQV..TRUE.)))
+    CALL GET_VAL_UNBURNT(velo,c_limit_index,c_limit_array)
+
     ! compute c with T
     CALL COMP_PROGRESS(TEMPER,PROG_VAR,.TRUE.)
     !CALL WRITE_COORD('./OUTPUT/GRIDX',GRIDX)
@@ -141,67 +162,12 @@ test=1
     PRINT*,"SUCCESSFUL"
     PRINT*,"READING DIFFUSION COEFFICIENTS..."
 
-    
-    !################################
-    ! process the velocity file
-    !IF (DIM.GT.2) THEN
-        !NX=NX-1
-        !NY=NY-1
-        !NZ=NZ-1
-        !ALLOCATE(UUX(NX,NY,NZ),STAT=IERR) 
-        !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-        !ALLOCATE(UUY(NX,NY,NZ),STAT=IERR) 
-        !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-        !ALLOCATE(UUZ(NX,NY,NZ),STAT=IERR) 
-        !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-    !ELSE
-        !ALLOCATE(UUX(NX,NY,NZ),STAT=IERR) 
-        !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-        !ALLOCATE(UUY(NX,NY,NZ),STAT=IERR) 
-        !IF (IERR.NE.0) CALL ALLOCATION_ERROR(IERR)
-    !END IF
-    !IF (DIM.GT.2) THEN
-        !!CALL READVEL(INDIR//'SID_VEL_2D0',NUMBER_OF_NODES,INDX,UUX,INDY,UUY,INDZ,UUZ)
-        !CALL READVEL(INDIR//'SID_VEL_2D0',UUX,UUY,UUZ)
-    !ELSE
-        !!CALL READVEL(INDIR//'SID_VEL_2D0',NUMBER_OF_NODES,INDX,UUX,INDY,UUY)
-        !CALL READVEL(INDIR//'SID_VEL_2D0',UUX,UUY)
-    !END IF
-    !IF (DIM.GT.2) THEN
-        !ALLOCATE(UU(NX,NY,NZ,3))
-        !UU(:,:,:,1) = UUX(:,:,:)
-        !UU(:,:,:,2) = UUY(:,:,:)
-        !UU(:,:,:,3) = UUZ(:,:,:)
-    !ELSE
-        !ALLOCATE(UU(NX,NY,NZ,2))
-        !UU(:,:,:,1) = UUX(:,:,:)
-        !UU(:,:,:,2) = UUY(:,:,:)
-    !END IF
-    !################################
-    ! computing statistical properties
-!    CALL MEAN(UU,NX,NY,NZ,DIM,MEANVAL)
-    !WRITE(*,*) 'MEAN: ',MEANVAL
-    !!
-!!    CALL DEVIAT(UUX,NX,NY,NZ,SIGMA)
-    !WRITE(*,*) 'SIGMAX: ',SIGMA
-!!    CALL DEVIAT(UUY,NX,NY,NZ,SIGMA)
-    !WRITE(*,*) 'SIGMAY: ',SIGMA
-    !IF (DIM.GT.2) THEN
-!!        CALL DEVIAT(UUZ,NX,NY,NZ,SIGMA)
-        !WRITE(*,*) 'SIGMAZ: ',SIGMA
-        !WRITE(*,*) 'SUCCESSFUL'
-    !END IF
-    !!
-    !ALLOCATE(DUMMY1(NX,NY,NZ))
-    !ALLOCATE(DUMMY2(NX,NY,NZ))
-    !ALLOCATE(TEST_OUT(NX,NY,NZ))
-    !DUMMY1(:,:,:)=DCMPLX(velo(:,:,:))
-    !DUMMY2(:,:,:)=DCMPLX(UUY(:,:,:),0.0)
-    !#########################################
     !!########## AUTO CORRELATION ############
     PRINT*,"compute correlation"
-    ALLOCATE(autocor(dimen(1),dimen(2),dimen(3)))
-    CALL CORREL(velo,autocor)
+    ALLOCATE(autocor(size(c_limit_array,1),1,1))
+    ALLOCATE(TEMP(size(c_limit_array,1),1,1))
+    temp(:,1,1) = c_limit_array(:)
+    CALL CORREL(temp,autocor)
     !!ALLOCATE(TEST_IN(NX,NY))
     !!TEST_IN(:,:)=TEST_OUT(:,:,1)
     !!CALL FFTSHIFT(TEST_IN,NX,NY) ! 2D shift of fourier transform

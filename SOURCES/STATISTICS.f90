@@ -440,29 +440,31 @@ MODULE STATISTICS
             ALLOCATE(workdata1(nx,ny,nz))
             ALLOCATE(temp(nx,ny,nz))
 
-            !velo(:,:,:) = in(:,:,:)
             velo = RESHAPE(in,(/nx*ny*nz/))
-            !CALL DEVIATION(VELO,NX,NY,NZ,SIGMA)
+            velo(:) = velo(:) - fgsl_stats_mean(velo,1_fgsl_size_t,dimen)
+
             sigma = fgsl_stats_variance(velo,1_fgsl_size_t,dimen)
             sigma = DSQRT(sigma)
-            !PRINT*,sigma
-            !dimen = 2
-            !sigma = fgsl_stats_mean(test,1_fgsl_size_t,dimen)
-            !PRINT*,sigma
+            PRINT*,"SIGMA=",sigma
+            PRINT*,"MEAN=",fgsl_stats_mean(velo,1_fgsl_size_t,dimen)
 
-            temp(:,:,:) = in(:,:,:)
+            temp(:,:,:) = in(:,:,:) - fgsl_stats_mean(velo,1_fgsl_size_t,dimen)
+
             !!!An r2c transform produces the same output as a FFTW_FORWARD complex
             !!!DFT of the same input
 
             plan = FFTW_PLAN_DFT_R2C_3D(nx,ny,nz,temp,workdata,FFTW_ESTIMATE)
             CALL FFTW_EXECUTE_DFT_R2C(plan,temp,workdata)
-            !compute autocorrelation on Fourier space
-            workdata1(:,:,:) = workdata(:,:,:)*CONJG(workdata(:,:,:))&
-                                 /sigma/sigma/dimen/dimen
+            !compute autocorrelation in Fourier space
+            workdata1(:,:,:) = workdata(:,:,:)*CONJG(workdata(:,:,:))/dimen/dimen/sigma/sigma
+            PRINT*,dimen
+            PRINT*,MAXVAL(REAL(workdata1))
+            PRINT*,MAXVAL(AIMAG(workdata1))
             CALL FFTW_DESTROY_PLAN(plan)
             ! Perform backward transformation to get real valued correlation
             plan = FFTW_PLAN_DFT_C2R_3D(nx,ny,nz,workdata1,out,FFTW_ESTIMATE)
             CALL FFTW_EXECUTE_DFT_C2R(plan,workdata1,out)
+            PRINT*,"maxval_out",MAXVAL(out)
             DEALLOCATE(velo)
             DEALLOCATE(workdata)
             DEALLOCATE(workdata1)
