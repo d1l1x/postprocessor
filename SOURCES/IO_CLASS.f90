@@ -66,27 +66,30 @@ USE NRTYPE
         INTEGER(SP) :: I
       END SUBROUTINE READ_GRID
     END INTERFACE READ_GRID
-    INTERFACE READVALUE
-      SUBROUTINE READVALUE(FILENAME,VAR)
-         USE INIT
-         USE NRTYPE
-         USE ONERROR
-         INTEGER :: I,J,K
-         INTEGER :: NPROC_Z,NPOINTS_Z
-         REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: VAR
-         CHARACTER(LEN=*), INTENT(IN) :: FILENAME
-      END SUBROUTINE READVALUE 
-    END INTERFACE READVALUE
-    INTERFACE READVALUE3D
-        SUBROUTINE READVALUE3D(FILENAME,VAR)
-           USE NRTYPE
-           USE ONERROR
-           INTEGER :: I,J,K
-           INTEGER :: NPROC_Z,NPOINTS_Z,TEMPZ_OLD
-           REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: VAR
-           CHARACTER(LEN=*), INTENT(IN) :: FILENAME
-           END SUBROUTINE READVALUE3D
-    END INTERFACE READVALUE3D
+    INTERFACE READ_VAL
+        !INTERFACE READVALUE
+          SUBROUTINE READVALUE(FILENAME,VAR)
+             USE INIT
+             USE NRTYPE
+             USE ONERROR
+             INTEGER :: I,J,K
+             INTEGER :: NPROC_Z,NPOINTS_Z
+             REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: VAR
+             CHARACTER(LEN=*), INTENT(IN) :: FILENAME
+          END SUBROUTINE READVALUE 
+        !END INTERFACE READVALUE
+        !INTERFACE READVALUE3D
+            SUBROUTINE READVALUE3D(FILENAME,VAR,dimen)
+               USE NRTYPE
+               USE ONERROR
+               INTEGER :: I,J,K
+               INTEGER :: NPROC_Z,NPOINTS_Z,TEMPZ_OLD
+               REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: VAR
+               CHARACTER(LEN=*),INTENT(IN) :: FILENAME
+               CHARACTER(LEN=*),INTENT(IN) :: dimen
+               END SUBROUTINE READVALUE3D
+        !END INTERFACE READVALUE3D
+    END INTERFACE READ_VAL
     INTERFACE WRITE_VALUE
       SUBROUTINE WRITE_VALUE(FILENAME,value)
         USE NRTYPE
@@ -148,128 +151,6 @@ USE NRTYPE
         REAL(SP),DIMENSION(:,:,:) :: UX,VY,WZ
         END SUBROUTINE READVEL_BIN
     END INTERFACE READVEL_BIN
-    !###################################################
-    !!!TYPE,PUBLIC :: IO
-    !!!    PRIVATE
-    !!!    INTEGER(SP) :: NOLINES
-    !!!    INTEGER(SP) :: NONODES
-    !!!    INTEGER(SP) :: NONX
-    !!!    INTEGER(SP) :: NONY
-    !!!    INTEGER(SP) :: NONZ
-    !!!    INTEGER(SP) :: DIM
-    !!!    REAL(DP),DIMENSION(:,:),POINTER :: dummy
-    !!!    CONTAINS
-    !!!    PROCEDURE,PUBLIC :: file_stats => read_file_sub
-    !!!    PROCEDURE,PUBLIC :: NOL => number_of_lines_f
-    !!!    PROCEDURE,PUBLIC :: NON => number_of_nodes_f
-    !!!    PROCEDURE,PUBLIC :: NX => number_of_nodes_x_f
-    !!!    PROCEDURE,PUBLIC :: NY => number_of_nodes_y_f
-    !!!    PROCEDURE,PUBLIC :: NZ => number_of_nodes_z_f
-    !!!    PROCEDURE,PUBLIC :: read_file => read_dummy_sub
-    !!!    PROCEDURE,PUBLIC :: field => field_f
-    !!!END TYPE IO
-    !PRIVATE :: read_file_sub,number_of_nodes_f,number_of_lines_f
-    !
-    !CONTAINS
-        !!!SUBROUTINE read_dummy_sub(this,filename,dimen)
-        !!!USE INIT
-        !!!USE NRTYPE
-        !!!USE ONERROR
-        !!!IMPLICIT NONE
-        !!!CLASS(IO) :: this
-        !!!CHARACTER(LEN=*), INTENT(IN) :: filename
-        !!!INTEGER(SP) :: STATUS_READ
-        !!!INTEGER(SP) :: N
-        !!!INTEGER(SP) :: dimen
-        !!!REAL(DP),DIMENSION(3),TARGET :: DUM1
-        !!!REAL(DP),DIMENSION(:,:),ALLOCATABLE,TARGET :: DUM
-        !!!TYPE :: ptr
-        !!!    REAL(DP),DIMENSION(:),POINTER :: p
-        !!!END TYPE ptr
-        !!!TYPE(ptr) :: p1
-        !!!STATUS_READ = 0
-        !!!! First loop to get number of lines
-        !!!OPEN(1,FILE=filename,STATUS='UNKNOWN',FORM='FORMATTED')
-        !!!DO
-        !!!    READ(1,*,IOSTAT=STATUS_READ)
-        !!!    IF(STATUS_READ.NE.0) EXIT
-        !!!    this%NOLINES = this%NOLINES + 1
-        !!!END DO
-        !!!this%NONODES = this%NOLINES
-        !!!!WRITE(*,*) this%NONODES
-        !!!this%NONX = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        !!!this%NONY = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        !!!this%NONZ = REAL(this%NONODES+1)**(REAL(1.D0/dimen))
-        !!!this%DIM = dimen
-        !!!IF (dimen.EQ.3)ALLOCATE(this%dummy(this%NOLINES,3))
-        !!!IF (dimen.EQ.2)ALLOCATE(this%dummy(this%NOLINES,2))
-        !!!!IF (dimen.EQ.3)ALLOCATE(p1(this%NOLINES))
-        !!!!IF (dimen.EQ.2)ALLOCATE(p1(this%NOLINES))
-        !!!!IF (ASSOCIATED(this%dummy)) THEN
-        !!!    IF (dimen.EQ.3) THEN
-        !!!        REWIND(1)
-        !!!        DO N=1,this%NONODES-1
-        !!!            !ALLOCATE(p1(dimen,N))
-        !!!            READ(1,*,IOSTAT=STATUS_READ) DUM1(1),DUM1(2),DUM1(3)
-        !!!            p1%p => DUM1
-        !!!            this%dummy(N,:) = p1%p(:)
-        !!!        END DO
-        !!!    ELSE 
-        !!!        DO N=1,this%NONODES-1
-        !!!            READ(1,*,IOSTAT=STATUS_READ) this%dummy(1,N),this%dummy(2,N)
-        !!!        END DO
-        !!!    END IF
-        !!!!END IF
-        !!!IF (dimen.EQ.3)ALLOCATE(this%dummy(3,this%NOLINES))
-        !!!IF (dimen.EQ.2)ALLOCATE(this%dummy(2,this%NOLINES))
-        !!!this%dummy => DUM
-        !!!CLOSE(1)
-        !!!END SUBROUTINE read_dummy_sub
-        !!!!
-        !!!SUBROUTINE read_file_sub()
-        !!!USE NRTYPE
-        !!!IMPLICIT NONE
-        !!!CONTINUE
-        !!!END SUBROUTINE read_file_sub
-        !!!!
-        !!!FUNCTION field_f(this) RESULT (array)
-        !!!USE NRTYPE
-        !!!IMPLICIT NONE
-        !!!CLASS(IO) :: this
-        !!!REAL(DP),DIMENSION(:,:),POINTER :: array
-        !!!array => this%dummy
-        !!!END FUNCTION field_f
-        !!!!
-        !!!REAL FUNCTION number_of_lines_f(this)
-        !!!IMPLICIT NONE
-        !!!CLASS(IO) :: this
-        !!!number_of_lines_f = this%NOLINES
-        !!!END FUNCTION number_of_lines_f
-        !!!!
-        !!!REAL FUNCTION number_of_nodes_f(this)
-        !!!IMPLICIT NONE
-        !!!CLASS(IO) :: this
-        !!!number_of_nodes_f = this%NONODES
-        !!!END FUNCTION number_of_nodes_f
-        !!!!
-        !!!REAL FUNCTION number_of_nodes_x_f(this)
-        !!!IMPLICIT NONE
-        !!!CLASS(IO) :: this
-        !!!number_of_nodes_x_f =  this%NONX
-        !!!END FUNCTION number_of_nodes_x_f
-        !!!!
-        !!!REAL FUNCTION number_of_nodes_y_f(this)
-        !!!IMPLICIT NONE
-        !!!CLASS(IO) :: this
-        !!!number_of_nodes_y_f =  this%NONY
-        !!!END FUNCTION number_of_nodes_y_f
-        !!!!
-        !!!REAL FUNCTION number_of_nodes_z_f(this)
-        !!!IMPLICIT NONE
-        !!!CLASS(IO) :: this
-        !!!number_of_nodes_z_f =  this%NONZ
-        !!!END FUNCTION number_of_nodes_z_f
-        !!
 END MODULE IO_CLASS
 !=============================================================================
 !> @author Felix Dietzsch
@@ -459,16 +340,20 @@ END SUBROUTINE READVALUE
 !> @param[in] FILENAME Specifies the name of the file containing the data to be read.
 !> @param[out] VAR Array containing node temperatures
 !=============================================================================
-SUBROUTINE READVALUE3D(FILENAME,VAR)
+SUBROUTINE READVALUE3D(FILENAME,VAR,dimen)
    !USE INIT
    USE NRTYPE
    USE ONERROR
    INTEGER :: I,J,K
    INTEGER :: NPROC_Z,NPOINTS_Z,TEMPZ_OLD
    REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: VAR
-   CHARACTER(LEN=*), INTENT(IN) :: FILENAME
+   CHARACTER(LEN=*),INTENT(IN) :: FILENAME
+   CHARACTER(LEN=*),INTENT(IN) :: dimen
    !
-   PRINT*,shape(var)
+   IF (dimen.NE."3D") THEN
+        WRITE(*,*) "ERROR in READ_VAL: This is not a 3D case"
+        STOP
+   END IF
    OPEN(1,FILE=FILENAME,FORM="UNFORMATTED",ACTION="read")
    REWIND(1)
    READ(1) NPROC_Z
@@ -478,7 +363,6 @@ SUBROUTINE READVALUE3D(FILENAME,VAR)
        READ(1) (((VAR(I,J,K),I=1,SIZE(VAR,1)),J=1,SIZE(VAR,2)),&
        K=TEMPZ_OLD+1,TEMPZ_OLD+NPOINTS_Z)
        TEMPZ_OLD = TEMPZ_OLD + NPOINTS_Z
-       PRINT*,VAR(I,J,K)
    ENDDO
    CLOSE(1)
 END SUBROUTINE READVALUE3D

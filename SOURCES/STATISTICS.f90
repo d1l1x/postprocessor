@@ -156,123 +156,77 @@ MODULE STATISTICS
         !>  eMail from Michael Gauding from July 12th 2011\n
         !>  concerns the integration of spherical shells
         !=============================================================================
-        SUBROUTINE SPEC3D(PROCNUM,NX,NY,NZ,OUT)
+        SUBROUTINE SPEC3D(velo,OUT)
             USE NRTYPE
             USE INIT
             USE,INTRINSIC :: iso_c_binding
             IMPLICIT NONE
-            !include "mpif.h"
             include "fftw3.f03"
-            INTEGER(SP) :: NX,NY,NZ
-            INTEGER(SP) :: PROCNUM
-            !TYPE(C_PTR) :: PLAN
-            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: WORKDATA1,WORKDATA2,WORKDATA3
-            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: PHI_X
-            COMPLEX(DPC),DIMENSION(:),INTENT(INOUT) :: OUT
-            !REAL(DP),DIMENSION(:,:,:) :: IN1,IN2,IN3
-            !COMPLEX(DPC),DIMENSION(NX,NY,NZ) :: TEMP1,TEMP2,TEMP3
-            !
-            !integer(C_INTPTR_T) :: alloc_local
-            integer(C_INTPTR_T) :: nnx
-            integer(C_INTPTR_T) :: nny
-            integer(C_INTPTR_T) :: nnz
-            !complex(C_DOUBLE),pointer :: data(:,:,:)
-            !type(C_PTR) :: plan,cdata
-            !
-            IF (PROCNUM.EQ.0) THEN
-                WRITE(*,*) 'Initialize FFTW_MPI ...'
-            END IF
-            !CALL FFTW_MPI_INIT()
-            IF (PROCNUM.EQ.0) THEN
-                WRITE(*,*) 'SUCCESS'
-            END IF
+            TYPE(C_PTR) :: plan
+            INTEGER(SP) :: nx,ny,nz
+            INTEGER(DP) :: i,j,k
+            INTEGER(DP) :: kappa_pos
+            REAL(DP) :: scaling,kappa_abs
+            REAL(DP),DIMENSION(:,:,:,:),INTENT(IN) :: velo
+            REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: temp
+            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: workdata1,workdata2,workdata3
+            REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: phi_x,phi_y,phi_z,phi
+            ! the spectrm ('out') is 3D for reasons of simplicity during
+            ! execution, since almost all routines rely on 3D data
+            REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: OUT
 
-            ALLOCATE(WORKDATA1(NX,NY,NZ))
-            ALLOCATE(WORKDATA2(NX,NY,NZ))
-            ALLOCATE(WORKDATA3(NX,NY,NZ))
-            ALLOCATE(PHI_X(NX/2,NY/2,NZ/2))
-            !ALLOCATE(PHI_Y(NX/2,NY/2,NZ/2))
-            !ALLOCATE(PHI_Z(NX/2,NY/2,NZ/2))
-            !TEMP1=DCMPLX(IN1)
-            !TEMP2=DCMPLX(IN2)
-            !TEMP3=DCMPLX(IN3)
-            !OUT(:) = DCMPLX(0.D0,0.D0)
-            !FFTW_DIRECTION = -1 ! forward transform
-            !! internal parameter of the fftw routines. Can be found in the
-            !! fftw3.f file, located in the include directory
-            nnx = NX
-            nny = NY
-            nnz = NZ
-            IF (PROCNUM.EQ.0) THEN
-                WRITE(*,*) 'Allocate local data ...'
-                WRITE(*,*) nnx,nny,nnz
-            END IF
-            !alloc_local = fftw_mpi_local_size_3d(nnx,nny,nnz,MPI_COMM_WORLD,local_n0,local_0_start)
-            !cdata = fftw_alloc_complex(alloc_local)
-            IF (PROCNUM.EQ.0) THEN
-                WRITE(*,*) 'SUCCESS'
-            END IF
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'Create data pointer ...'
-            !END IF
-            !call c_f_pointer(cdata,data,[local_n0,nny,nnz])
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'SUCCESS'
-            !END IF
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'Create FFTW plan ...'
-            !END IF
-            !plan = fftw_mpi_plan_dft_3d(nnx,nny,nnz,data,data, &
-            !                            MPI_COMM_WORLD,FFTW_FORWARD,FFTW_ESTIMATE)
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'SUCCESS'
-            !END IF
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'Partition data ...'
-            !END IF
-            !do i = 1, local_n0
-            !    do j = 1,nny
-            !        do k = 1,nnz
-            !            data(i,j,k) = DCMPLX(IN1(local_0_start+i,j,k))
-            !        end do
-            !    end do
-            !end do
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'SUCCESS'
-            !END IF
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'Execute parallel FFT ...'
-            !END IF
-            !call fftw_mpi_execute_dft(plan,data,data)
-            !IF (PROCNUM.EQ.0) THEN
-            !    WRITE(*,*) 'SUCCESS'
-            !END IF
-            !call fftw_destroy_plan(plan)
-            !call fftw_free(cdata)
-            OUT(:) = 1
+            nx = SIZE(velo,1)
+            ny = SIZE(velo,2)
+            nz = SIZE(velo,3)
 
-            !CALL DFFTW_PLAN_DFT_3D(PLAN,NX,NY,NZ,TEMP1,WORKDATA1,FFTW_DIRECTION,FFTW_ESTIMATE)
-            !CALL DFFTW_EXECUTE_DFT(PLAN)
-            !CALL DFFTW_DESTROY_PLAN(PLAN)
+            ALLOCATE(workdata1(nx,ny,nz))
+            ALLOCATE(workdata2(nx,ny,nz))
+            ALLOCATE(workdata3(nx,ny,nz))
+            ALLOCATE(temp(nx,ny,nz))
+            ALLOCATE(phi_x(nx,ny,nz))
+            ALLOCATE(phi_y(nx,ny,nz))
+            ALLOCATE(phi_z(nx,ny,nz))
+            ALLOCATE(phi(nx,ny,nz))
             !
-            !CALL DFFTW_PLAN_DFT_3D(PLAN,NX,NY,NZ,TEMP2,WORKDATA2,FFTW_DIRECTION,FFTW_ESTIMATE)
-            !CALL DFFTW_EXECUTE_DFT(PLAN)
-            !CALL DFFTW_DESTROY_PLAN(PLAN)
-            !!
-            !CALL DFFTW_PLAN_DFT_3D(PLAN,NX,NY,NZ,TEMP3,WORKDATA3,FFTW_DIRECTION,FFTW_ESTIMATE)
-            !CALL DFFTW_EXECUTE_DFT(PLAN)
-            !CALL DFFTW_DESTROY_PLAN(PLAN)
-            !!
-            !SCALING = NX*NY*NZ
-            !PHI_X(:,:,:)= WORKDATA1(1:NX/2,1:NY/2,1:NZ/2)*CONJG(WORKDATA1(1:NX/2,1:NY/2,1:NZ/2))*1.D0/SCALING**2
-            !PHI_Y(:,:,:)= WORKDATA2(1:NX/2,1:NY/2,1:NZ/2)*CONJG(WORKDATA2(1:NX/2,1:NY/2,1:NZ/2))*1.D0/SCALING**2
-            !PHI_Z(:,:,:)= WORKDATA3(1:NX/2,1:NY/2,1:NZ/2)*CONJG(WORKDATA3(1:NX/2,1:NY/2,1:NZ/2))*1.D0/SCALING**2
-            !DEALLOCATE(WORKDATA1)
-            !DEALLOCATE(WORKDATA2)
-            !DEALLOCATE(WORKDATA3)
+            temp(:,:,:) = velo(:,:,:,1)
+            plan = FFTW_PLAN_DFT_R2C_3D(nx,ny,nz,temp,workdata1,FFTW_ESTIMATE)
+            CALL FFTW_EXECUTE_DFT_R2C(plan,temp,workdata1)
+            CALL FFTW_DESTROY_PLAN(plan)
+            temp(:,:,:) = velo(:,:,:,2)
+            plan = FFTW_PLAN_DFT_R2C_3D(nx,ny,nz,temp,workdata2,FFTW_ESTIMATE)
+            CALL FFTW_EXECUTE_DFT_R2C(plan,temp,workdata2)
+            CALL FFTW_DESTROY_PLAN(plan)
+            temp(:,:,:) = velo(:,:,:,3)
+            plan = FFTW_PLAN_DFT_R2C_3D(nx,ny,nz,temp,workdata3,FFTW_ESTIMATE)
+            CALL FFTW_EXECUTE_DFT_R2C(plan,temp,workdata3)
+            CALL FFTW_DESTROY_PLAN(plan)
+            scaling = nx*ny*nz ! comes from FFT
+            ! the product of a*conj(a) is casted to real in order to avoid
+            ! warnings during compilation
+            phi_x(:,:,:)= REAL(workdata1(:,:,:)*CONJG(workdata1(:,:,:)))/scaling/scaling
+            phi_y(:,:,:)= REAL(workdata2(:,:,:)*CONJG(workdata2(:,:,:)))/scaling/scaling
+            phi_z(:,:,:)= REAL(workdata3(:,:,:)*CONJG(workdata3(:,:,:)))/scaling/scaling
+            phi(:,:,:) = phi_x(:,:,:) + phi_y(:,:,:) + phi_z(:,:,:)
+            DEALLOCATE(workdata1)
+            DEALLOCATE(workdata2)
+            DEALLOCATE(workdata3)
+            DEALLOCATE(temp)
+            DEALLOCATE(phi_x)
+            DEALLOCATE(phi_y)
+            DEALLOCATE(phi_z)
+            DO k=1,nz
+                DO j=1,ny
+                    DO i=1,nx
+                        kappa_abs = SQRT(REAL(k*k)+REAL(j*j)+REAL(i*i))
+                        kappa_pos = INT(kappa_abs)
+                        out(kappa_pos,1,1) = out(kappa_pos,1,1) + phi(i,j,k)*kappa_abs*kappa_abs
+                    ENDDO
+                ENDDO
+            ENDDO
+            out(:,1,1) = 2*PI_D*out(:,1,1)
             !DO J=1,NY/2
-            !    DO I=1,NX/2
-            !        DO K=1,NZ/2
+                !DO I=1,NX/2
+                    !DO K=1,NZ/2
             !            II = I
             !            JJ = J
             !            KK = K
@@ -289,10 +243,6 @@ MODULE STATISTICS
             !    END DO
             !END DO
             !OUT(:)=OUT(:)*1.D0
-            !DEALLOCATE(PHI_X)
-            !DEALLOCATE(PHI_Y)
-            !DEALLOCATE(PHI_Z)
-            !CALL FFTW_MPI_CLEANUP()
         END SUBROUTINE SPEC3D
         !=============================================================================
         !> @author Felix Dietzsch
@@ -445,8 +395,8 @@ MODULE STATISTICS
 
             sigma = fgsl_stats_variance(velo,1_fgsl_size_t,dimen)
             sigma = DSQRT(sigma)
-            PRINT*,"SIGMA=",sigma
-            PRINT*,"MEAN=",fgsl_stats_mean(velo,1_fgsl_size_t,dimen)
+            !PRINT*,"SIGMA=",sigma
+            !PRINT*,"MEAN=",fgsl_stats_mean(velo,1_fgsl_size_t,dimen)
 
             temp(:,:,:) = in(:,:,:) - fgsl_stats_mean(velo,1_fgsl_size_t,dimen)
 
@@ -458,8 +408,8 @@ MODULE STATISTICS
             !compute autocorrelation in Fourier space
             workdata1(:,:,:) = workdata(:,:,:)*CONJG(workdata(:,:,:))/dimen/dimen/sigma/sigma
             PRINT*,dimen
-            PRINT*,MAXVAL(REAL(workdata1))
-            PRINT*,MAXVAL(AIMAG(workdata1))
+            !PRINT*,MAXVAL(REAL(workdata1))
+            !PRINT*,MAXVAL(AIMAG(workdata1))
             CALL FFTW_DESTROY_PLAN(plan)
             ! Perform backward transformation to get real valued correlation
             plan = FFTW_PLAN_DFT_C2R_3D(nx,ny,nz,workdata1,out,FFTW_ESTIMATE)
