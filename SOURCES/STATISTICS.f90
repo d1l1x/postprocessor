@@ -156,7 +156,7 @@ MODULE STATISTICS
         !>  eMail from Michael Gauding from July 12th 2011\n
         !>  concerns the integration of spherical shells
         !=============================================================================
-        SUBROUTINE SPEC3D(velo,OUT)
+        SUBROUTINE SPEC3D(velo,out,kappa)
             USE NRTYPE
             USE INIT
             USE,INTRINSIC :: iso_c_binding
@@ -166,14 +166,15 @@ MODULE STATISTICS
             INTEGER(SP) :: nx,ny,nz
             INTEGER(DP) :: i,j,k
             INTEGER(DP) :: kappa_pos
+            REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: kappa
             REAL(DP) :: scaling,kappa_abs
             REAL(DP),DIMENSION(:,:,:,:),INTENT(IN) :: velo
             REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: temp
             COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: workdata1,workdata2,workdata3
-            REAL(DP),DIMENSION(:,:,:),ALLOCATABLE :: phi_x,phi_y,phi_z,phi
+            COMPLEX(DPC),DIMENSION(:,:,:),ALLOCATABLE :: phi_x,phi_y,phi_z,phi
             ! the spectrm ('out') is 3D for reasons of simplicity during
             ! execution, since almost all routines rely on 3D data
-            REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: OUT
+            REAL(DP),DIMENSION(:,:,:),INTENT(INOUT) :: out
 
             nx = SIZE(velo,1)
             ny = SIZE(velo,2)
@@ -183,9 +184,9 @@ MODULE STATISTICS
             ALLOCATE(workdata2(nx,ny,nz))
             ALLOCATE(workdata3(nx,ny,nz))
             ALLOCATE(temp(nx,ny,nz))
-            ALLOCATE(phi_x(nx,ny,nz))
-            ALLOCATE(phi_y(nx,ny,nz))
-            ALLOCATE(phi_z(nx,ny,nz))
+            ALLOCATE(phi_x(nx/2,ny/2,nz/2))
+            ALLOCATE(phi_y(nx/2,ny/2,nz/2))
+            ALLOCATE(phi_z(nx/2,ny/2,nz/2))
             ALLOCATE(phi(nx,ny,nz))
             !
             temp(:,:,:) = velo(:,:,:,1)
@@ -203,27 +204,34 @@ MODULE STATISTICS
             scaling = nx*ny*nz ! comes from FFT
             ! the product of a*conj(a) is casted to real in order to avoid
             ! warnings during compilation
-            phi_x(:,:,:)= REAL(workdata1(:,:,:)*CONJG(workdata1(:,:,:)))/scaling/scaling
-            phi_y(:,:,:)= REAL(workdata2(:,:,:)*CONJG(workdata2(:,:,:)))/scaling/scaling
-            phi_z(:,:,:)= REAL(workdata3(:,:,:)*CONJG(workdata3(:,:,:)))/scaling/scaling
-            phi(:,:,:) = phi_x(:,:,:) + phi_y(:,:,:) + phi_z(:,:,:)
+            phi_x(:,:,:)= (workdata1(nx/2,ny/2,nz/2)*CONJG(workdata1(nx/2,ny/2,nz/2)))/scaling/scaling
+            phi_y(:,:,:)= (workdata2(nx/2,ny/2,nz/2)*CONJG(workdata2(nx/2,ny/2,nz/2)))/scaling/scaling
+            phi_z(:,:,:)= (workdata3(nx/2,ny/2,nz/2)*CONJG(workdata3(nx/2,ny/2,nz/2)))/scaling/scaling
+            !phi(:,:,:) = phi_x(:,:,:) + phi_y(:,:,:) + phi_z(:,:,:)
             DEALLOCATE(workdata1)
             DEALLOCATE(workdata2)
             DEALLOCATE(workdata3)
             DEALLOCATE(temp)
-            DEALLOCATE(phi_x)
-            DEALLOCATE(phi_y)
-            DEALLOCATE(phi_z)
-            DO k=1,nz
-                DO j=1,ny
-                    DO i=1,nx
+            PRINT*,"Compute spectrum"
+            DO k=1,nz/2-1
+                DO j=1,ny/2-1
+                    DO i=1,nx/2-1
                         kappa_abs = SQRT(REAL(k*k)+REAL(j*j)+REAL(i*i))
                         kappa_pos = INT(kappa_abs)
-                        out(kappa_pos,1,1) = out(kappa_pos,1,1) + phi(i,j,k)*kappa_abs*kappa_abs
+                        !out(kappa_pos,1,1) = out(kappa_pos,1,1) + phi(i,j,k)*kappa_abs*kappa_abs
+                        out(kappa_pos,1,1) = out(kappa_pos,1,1) + &
+                                            (REAL(phi_x(i,j,k))*REAL(phi_x(i,j,k))+AIMAG(phi_x(i,j,k))*AIMAG(phi_x(i,j,k)) &
+                                            +REAL(phi_y(i,j,k))*REAL(phi_y(i,j,k))+AIMAG(phi_y(i,j,k))*AIMAG(phi_y(i,j,k)) &
+                                            +REAL(phi_z(i,j,k))*REAL(phi_z(i,j,k))+AIMAG(phi_z(i,j,k))*AIMAG(phi_z(i,j,k)))
+                        kappa(kappa_pos,1,1) = kappa_pos
                     ENDDO
                 ENDDO
             ENDDO
             out(:,1,1) = 2*PI_D*out(:,1,1)
+            DEALLOCATE(phi_x)
+            DEALLOCATE(phi_y)
+            DEALLOCATE(phi_z)
+
             !DO J=1,NY/2
                 !DO I=1,NX/2
                     !DO K=1,NZ/2
@@ -407,14 +415,12 @@ MODULE STATISTICS
             CALL FFTW_EXECUTE_DFT_R2C(plan,temp,workdata)
             !compute autocorrelation in Fourier space
             workdata1(:,:,:) = workdata(:,:,:)*CONJG(workdata(:,:,:))/dimen/dimen/sigma/sigma
-            PRINT*,dimen
             !PRINT*,MAXVAL(REAL(workdata1))
             !PRINT*,MAXVAL(AIMAG(workdata1))
             CALL FFTW_DESTROY_PLAN(plan)
             ! Perform backward transformation to get real valued correlation
             plan = FFTW_PLAN_DFT_C2R_3D(nx,ny,nz,workdata1,out,FFTW_ESTIMATE)
             CALL FFTW_EXECUTE_DFT_C2R(plan,workdata1,out)
-            PRINT*,"maxval_out",MAXVAL(out)
             DEALLOCATE(velo)
             DEALLOCATE(workdata)
             DEALLOCATE(workdata1)
