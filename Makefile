@@ -11,14 +11,18 @@ F90_Darwin=gfortran
 SOURCEDIR=./SOURCES
 FFTW_INC=-I$(SOURCEDIR)/fftw/$(OS)/include
 FFTW_LIB=-L$(SOURCEDIR)/fftw/$(OS)/lib -lfftw3 -lm 
-GSL_LIB=-L/opt/local/lib -lgsl -lgslcblas
-GSL_INC=-I/opt/local/include
-FGSL_INC=-I$(SOURCEDIR)/fgsl/$(OS)/include/$(F90) $(GSL_LIB)
-FGSL_LIB=-L$(SOURCEDIR)/fgsl/$(OS)/lib -lfgsl_$(F90)
+GSL_LIB=-L$(SOURCEDIR)/gsl/lib -lgsl -lgslcblas
+GSL_INC=-I$(SOURCEDIR)/gsl/include
+FGSL_INC=-I$(SOURCEDIR)/fgsl/$(OS)/include/$(F90_Linux) $(GSL_LIB)
+FGSL_LIB=-L$(SOURCEDIR)/fgsl/$(OS)/lib -lfgsl_$(F90_Linux)
 
-FPP=-cpp
-#OPT=-g -O0
-OPT=-O3 -Wall
+ifeq ($(F90_$(OS)),"gfortran")
+	FPP=-cpp
+	OPT=-O3 -Wall
+else
+	FPP=-fpp
+	OPT=-O3 -Warn all
+endif
 RM = \rm -rf
 
 SOURCES=ONERROR NRTYPE TIMER_CLASS INIT IO_CLASS STATISTICS PREMIXED_CLASS  SPECTRAL_ANALYSIS

@@ -1,0 +1,11 @@
+prefix=/home/fdietzsc/Git/postprocessor/SOURCES/gsl/Linux
+exec_prefix=/home/fdietzsc/Git/postprocessor/SOURCES/gsl/Linux
+libdir=/home/fdietzsc/Git/postprocessor/SOURCES/gsl/Linux/lib
+includedir=/home/fdietzsc/Git/postprocessor/SOURCES/gsl/Linux/include
+GSL_CBLAS_LIB=-lgslcblas
+
+Name: GSL
+Description: GNU Scientific Library
+Version: 1.15
+Libs: -L/home/fdietzsc/Git/postprocessor/SOURCES/gsl/Linux/lib -lgsl ${GSL_CBLAS_LIB} -lm -lm 
+Cflags: -I/home/fdietzsc/Git/postprocessor/SOURCES/gsl/Linux/include
