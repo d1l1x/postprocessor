@@ -1,19 +1,25 @@
-F90=gfortran
-CC=gcc
+OS=$(shell uname)
 
-RM = \rm -rf
+CC=$(CC_$(OS))
+F90=$(F90_$(OS))
+
+CC_Linux=icc
+CC_Darwin=gcc
+F90_Linux=ifort
+F90_Darwin=gfortran
 
 SOURCEDIR=./SOURCES
-FFTW_INC=-I$(SOURCEDIR)/fftw/mac/include
-FFTW_LIB=-L$(SOURCEDIR)/fftw/mac/lib -lfftw3 -lm 
+FFTW_INC=-I$(SOURCEDIR)/fftw/$(OS)/include
+FFTW_LIB=-L$(SOURCEDIR)/fftw/$(OS)/lib -lfftw3 -lm 
 GSL_LIB=-L/opt/local/lib -lgsl -lgslcblas
 GSL_INC=-I/opt/local/include
-FGSL_INC=-I$(SOURCEDIR)/fgsl/mac/include/$(F90) $(GSL_LIB)
-FGSL_LIB=-L$(SOURCEDIR)/fgsl/mac/lib -lfgsl_$(F90)
+FGSL_INC=-I$(SOURCEDIR)/fgsl/$(OS)/include/$(F90) $(GSL_LIB)
+FGSL_LIB=-L$(SOURCEDIR)/fgsl/$(OS)/lib -lfgsl_$(F90)
 
 FPP=-cpp
 #OPT=-g -O0
 OPT=-O3 -Wall
+RM = \rm -rf
 
 SOURCES=ONERROR NRTYPE TIMER_CLASS INIT IO_CLASS STATISTICS PREMIXED_CLASS  SPECTRAL_ANALYSIS
 #ALGEBRA 
