@@ -1,8 +1,8 @@
 #! /bin/sh
 
-prefix=/shared/home/fdietzsc/Hasse-Tools/spectral_analysis/SOURCES/gsl
-exec_prefix=/shared/home/fdietzsc/Hasse-Tools/spectral_analysis/SOURCES/gsl
-includedir=/shared/home/fdietzsc/Hasse-Tools/spectral_analysis/SOURCES/gsl/include
+prefix=/Users/fdietzsc/Git/postprocessor/SOURCES/gsl/Darwin
+exec_prefix=/Users/fdietzsc/Git/postprocessor/SOURCES/gsl/Darwin
+includedir=/Users/fdietzsc/Git/postprocessor/SOURCES/gsl/Darwin/include
 
 usage()
 {
@@ -58,16 +58,16 @@ while test $# -gt 0; do
 	;;
 
     --cflags)
-       	echo -I/shared/home/fdietzsc/Hasse-Tools/spectral_analysis/SOURCES/gsl/include 
+       	echo -I/Users/fdietzsc/Git/postprocessor/SOURCES/gsl/Darwin/include 
        	;;
 
     --libs)
         : ${GSL_CBLAS_LIB=-lgslcblas}
-	echo -L/shared/home/fdietzsc/Hasse-Tools/spectral_analysis/SOURCES/gsl/lib -lgsl $GSL_CBLAS_LIB -lm
+	echo -L/Users/fdietzsc/Git/postprocessor/SOURCES/gsl/Darwin/lib -lgsl $GSL_CBLAS_LIB 
        	;;
 
     --libs-without-cblas)
-	echo -L/shared/home/fdietzsc/Hasse-Tools/spectral_analysis/SOURCES/gsl/lib -lgsl -lm
+	echo -L/Users/fdietzsc/Git/postprocessor/SOURCES/gsl/Darwin/lib -lgsl 
        	;;
     *)
 	usage

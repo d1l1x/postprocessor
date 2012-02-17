@@ -11,12 +11,12 @@ F90_Darwin=gfortran
 SOURCEDIR=./SOURCES
 FFTW_INC=-I$(SOURCEDIR)/fftw/$(OS)/include
 FFTW_LIB=-L$(SOURCEDIR)/fftw/$(OS)/lib -lfftw3 -lm 
-GSL_LIB=-L$(SOURCEDIR)/gsl/lib -lgsl -lgslcblas
-GSL_INC=-I$(SOURCEDIR)/gsl/include
-FGSL_INC=-I$(SOURCEDIR)/fgsl/$(OS)/include/$(F90_Linux) $(GSL_LIB)
-FGSL_LIB=-L$(SOURCEDIR)/fgsl/$(OS)/lib -lfgsl_$(F90_Linux)
+GSL_LIB=-L$(SOURCEDIR)/gsl/$(OS)/lib -lgsl -lgslcblas
+GSL_INC=-I$(SOURCEDIR)/gsl/$(OS)/include
+FGSL_INC=-I$(SOURCEDIR)/fgsl/$(OS)/include/$(F90_$(OS)) $(GSL_LIB)
+FGSL_LIB=-L$(SOURCEDIR)/fgsl/$(OS)/lib -lfgsl_$(F90_$(OS))
 
-ifeq ($(F90_$(OS)),"gfortran")
+ifeq ($(F90_$(OS)),gfortran)
 	FPP=-cpp
 	OPT=-O3 -Wall
 else

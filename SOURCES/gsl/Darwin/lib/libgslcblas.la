@@ -5,16 +5,16 @@
 # It is necessary for linking the library.
 
 # The name that we can dlopen(3).
-dlname='libgslcblas.so.0'
+dlname='libgslcblas.0.dylib'
 
 # Names of this library.
-library_names='libgslcblas.so.0.0.0 libgslcblas.so.0 libgslcblas.so'
+library_names='libgslcblas.0.dylib libgslcblas.dylib'
 
 # The name of the static archive.
 old_library='libgslcblas.a'
 
 # Linker flags that can not go in dependency_libs.
-inherited_linker_flags=''
+inherited_linker_flags=' '
 
 # Libraries that this one depends upon.
 dependency_libs=' -lm'
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/shared/home/fdietzsc/Hasse-Tools/spectral_analysis/SOURCES/gsl/lib'
+libdir='/Users/fdietzsc/Git/postprocessor/SOURCES/gsl/Darwin/lib'
